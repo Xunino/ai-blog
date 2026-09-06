@@ -202,3 +202,27 @@ const filtered = headings.filter((heading) => heading.depth === 2 || heading.dep
     }
   }
 </style>
+
+<script is:inline>
+  function setupTocTopLinks() {
+    document.querySelectorAll('.toc-top-link').forEach(function (link) {
+      if (link.dataset.bound) return;
+      link.dataset.bound = 'true';
+      link.addEventListener('click', function (e) {
+        e.preventDefault();
+        var content = document.querySelector('.shell-content-col');
+        if (content && content.scrollHeight > content.clientHeight) {
+          content.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupTocTopLinks);
+  } else {
+    setupTocTopLinks();
+  }
+  document.addEventListener('astro:page-load', setupTocTopLinks);
+</script>

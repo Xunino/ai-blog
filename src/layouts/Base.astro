@@ -251,11 +251,20 @@ const containerClass = container === 'none' ? '' : `container-${container}`;
         if (topBtn && !topBtn.dataset.bound) {
           topBtn.dataset.bound = 'true';
           topBtn.addEventListener('click', function () {
+            var contentCol = document.querySelector('.shell-content-col');
+            if (contentCol && contentCol.scrollHeight > contentCol.clientHeight) {
+              contentCol.scrollTo({ top: 0, behavior: 'smooth' });
+            }
             window.scrollTo({ top: 0, behavior: 'smooth' });
           });
 
           function checkScroll() {
-            if (window.scrollY > 400) {
+            var contentCol = document.querySelector('.shell-content-col');
+            var scrollY =
+              contentCol && contentCol.scrollHeight > contentCol.clientHeight
+                ? contentCol.scrollTop
+                : window.scrollY;
+            if (scrollY > 400) {
               topBtn.classList.add('visible');
             } else {
               topBtn.classList.remove('visible');
@@ -263,6 +272,11 @@ const containerClass = container === 'none' ? '' : `container-${container}`;
           }
 
           window.addEventListener('scroll', checkScroll, { passive: true });
+          var contentCol = document.querySelector('.shell-content-col');
+          if (contentCol && !contentCol.dataset.scrollBound) {
+            contentCol.dataset.scrollBound = 'true';
+            contentCol.addEventListener('scroll', checkScroll, { passive: true });
+          }
           checkScroll();
         }
       }
@@ -273,6 +287,24 @@ const containerClass = container === 'none' ? '' : `container-${container}`;
         setupMobileInteractions();
       }
       document.addEventListener('astro:page-load', setupMobileInteractions);
+
+      document.addEventListener('astro:after-swap', function () {
+        var contentCol = document.querySelector('.shell-content-col');
+        if (contentCol) {
+          contentCol.scrollTop = 0;
+        }
+      });
+
+      document.addEventListener('astro:page-load', function () {
+        if (window.location.hash) {
+          try {
+            var target = document.querySelector(window.location.hash);
+            if (target) {
+              target.scrollIntoView();
+            }
+          } catch (e) {}
+        }
+      });
     </script>
   </body>
 </html>
