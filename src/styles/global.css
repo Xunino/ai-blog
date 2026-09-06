@@ -619,6 +619,102 @@ th {
   color: var(--text-muted);
 }
 
+/* Home subtle side-project promo pill */
+.home-promo-wrapper {
+  margin-top: var(--space-sm);
+}
+
+.home-promo-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.28rem 0.75rem 0.28rem 0.35rem;
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
+  border-radius: 9999px;
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+  max-width: 100%;
+}
+
+.home-promo-pill:hover {
+  border-color: var(--border-hover);
+  background: var(--bg-card-hover);
+  color: var(--text);
+  transform: translateY(-1px);
+}
+
+.promo-badge {
+  display: inline-block;
+  padding: 0.15rem 0.5rem;
+  border-radius: 9999px;
+  background: var(--bg-card);
+  color: var(--text-subtle);
+  font-size: 0.7rem;
+  font-weight: 600;
+  border: 1px solid var(--border);
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.promo-text {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.promo-title {
+  font-weight: 600;
+  color: var(--text);
+  flex-shrink: 0;
+}
+
+.promo-sep {
+  opacity: 0.45;
+  user-select: none;
+  flex-shrink: 0;
+}
+
+.promo-desc {
+  color: var(--text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.promo-arrow-icon {
+  width: 13px;
+  height: 13px;
+  color: var(--text-subtle);
+  flex-shrink: 0;
+  transition: transform 0.15s ease, color 0.15s ease;
+}
+
+.home-promo-pill:hover .promo-arrow-icon {
+  transform: translate(1px, -1px);
+  color: var(--accent);
+}
+
+.home-promo-pill:hover .promo-title {
+  color: var(--accent);
+}
+
+@media (max-width: 640px) {
+  .promo-desc {
+    display: none;
+  }
+  .promo-sep {
+    display: none;
+  }
+}
+
 /* Responsive App Shell */
 @media (min-width: 1024px) and (max-width: 1279px) {
   .app-shell {

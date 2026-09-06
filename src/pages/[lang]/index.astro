@@ -44,6 +44,27 @@ const topFolders = tree.filter((item) => item.isFolder);
         <header class="home-hero" style="border-bottom: none; margin-bottom: var(--space-md);">
           <h1 class="hero-title">{SITE.title[locale]}</h1>
           <p class="hero-desc">{SITE.description[locale]}</p>
+
+          {/* Quảng bá tinh tế tiện ích cá nhân mà không làm mất tiêu điểm của blog */}
+          <div class="home-promo-wrapper">
+            <a
+              href="https://shop.meva.io.vn/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="home-promo-pill"
+            >
+              <span class="promo-badge">{t('deals.sideProject')}</span>
+              <span class="promo-text">
+                <span class="promo-title">{t('deals.title')}</span>
+                <span class="promo-sep" aria-hidden="true">&middot;</span>
+                <span class="promo-desc">{t('deals.desc')}</span>
+              </span>
+              <svg class="promo-arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <line x1="7" y1="17" x2="17" y2="7"></line>
+                <polyline points="7 7 17 7 17 17"></polyline>
+              </svg>
+            </a>
+          </div>
         </header>
 
         {/* Lưới các chuyên mục chính dạng thẻ trực quan */}

@@ -9,6 +9,10 @@ export const UI = {
     'nav.close': 'Đóng',
     'nav.skipToContent': 'Bỏ qua, đến nội dung chính',
 
+    'deals.sideProject': 'Dự án khác',
+    'deals.title': 'Shopee Deal Finder',
+    'deals.desc': 'Săn deal & theo dõi biến động giá Shopee',
+
     'theme.toggle': 'Đổi giao diện sáng/tối',
 
     'search.label': 'Tìm kiếm',
@@ -70,6 +74,10 @@ export const UI = {
     'nav.menu': 'Contents',
     'nav.close': 'Close',
     'nav.skipToContent': 'Skip to main content',
+
+    'deals.sideProject': 'Side project',
+    'deals.title': 'Shopee Deal Finder',
+    'deals.desc': 'Track price history & find Shopee deals',
 
     'theme.toggle': 'Toggle light/dark theme',
 
