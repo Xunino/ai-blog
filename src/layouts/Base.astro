@@ -55,7 +55,7 @@ const containerClass = container === 'none' ? '' : `container-${container}`;
 <html lang={locale}>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 
     <title>{pageTitle}</title>
     <meta name="description" content={pageDescription} />
@@ -130,6 +130,13 @@ const containerClass = container === 'none' ? '' : `container-${container}`;
               var doc = parser.parseFromString(svgText, 'image/svg+xml');
               var svg = doc.querySelector('svg');
               if (svg) {
+                // Xóa các định nghĩa biến màu gốc trong SVG inline để SVG tự động thừa kế biến màu từ trang (light/dark theme)
+                var styles = svg.querySelectorAll('style');
+                styles.forEach(function(styleEl) {
+                  styleEl.textContent = styleEl.textContent
+                    .replace(/@media[^{]*\{[^{]*\{[^}]*\}[^}]*\}/g, '')
+                    .replace(/(?::root|svg)\s*\{[^}]*--text:[^}]*\}/g, '');
+                });
                 svg.setAttribute('role', 'img');
                 if (img.alt) svg.setAttribute('aria-label', img.alt);
                 img.replaceWith(svg);
@@ -160,5 +167,112 @@ const containerClass = container === 'none' ? '' : `container-${container}`;
       )}
     </main>
     {showFooter && <Footer locale={locale} />}
+
+    <!-- Lớp phủ mờ nền khi mở Mobile Drawer -->
+    <div id="sidebar-backdrop" class="sidebar-backdrop" aria-hidden="true"></div>
+
+    <!-- Nút nổi Lên đầu trang trên màn hình di động -->
+    <button
+      id="back-to-top"
+      class="floating-top-btn"
+      type="button"
+      title={t('toc.backToTop')}
+      aria-label={t('toc.backToTop')}
+    >
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <polyline points="18 15 12 9 6 15"></polyline>
+      </svg>
+    </button>
+
+    <script is:inline>
+      function setupMobileInteractions() {
+        var toggleBtn = document.getElementById('mobile-sidebar-toggle');
+        var sidebar = document.querySelector('.shell-sidebar-col');
+        var backdrop = document.getElementById('sidebar-backdrop');
+        var closeBtn = document.getElementById('mobile-sidebar-close');
+        var topBtn = document.getElementById('back-to-top');
+
+        if (sidebar && toggleBtn) {
+          toggleBtn.style.display = '';
+
+          function openSidebar() {
+            sidebar.classList.add('is-open');
+            if (backdrop) backdrop.classList.add('is-open');
+            toggleBtn.setAttribute('aria-expanded', 'true');
+            document.body.style.overflow = 'hidden';
+
+            var activeLink = sidebar.querySelector('.tree-link.active');
+            if (activeLink) {
+              activeLink.scrollIntoView({ block: 'center', behavior: 'smooth' });
+            }
+          }
+
+          function closeSidebar() {
+            sidebar.classList.remove('is-open');
+            if (backdrop) backdrop.classList.remove('is-open');
+            toggleBtn.setAttribute('aria-expanded', 'false');
+            document.body.style.overflow = '';
+          }
+
+          if (!toggleBtn.dataset.bound) {
+            toggleBtn.dataset.bound = 'true';
+            toggleBtn.addEventListener('click', function () {
+              if (sidebar.classList.contains('is-open')) {
+                closeSidebar();
+              } else {
+                openSidebar();
+              }
+            });
+          }
+
+          if (backdrop && !backdrop.dataset.bound) {
+            backdrop.dataset.bound = 'true';
+            backdrop.addEventListener('click', closeSidebar);
+          }
+
+          if (closeBtn && !closeBtn.dataset.bound) {
+            closeBtn.dataset.bound = 'true';
+            closeBtn.addEventListener('click', closeSidebar);
+          }
+
+          sidebar.querySelectorAll('a').forEach(function (link) {
+            link.addEventListener('click', closeSidebar);
+          });
+
+          document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && sidebar.classList.contains('is-open')) {
+              closeSidebar();
+            }
+          });
+        } else if (toggleBtn) {
+          toggleBtn.style.display = 'none';
+        }
+
+        if (topBtn && !topBtn.dataset.bound) {
+          topBtn.dataset.bound = 'true';
+          topBtn.addEventListener('click', function () {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          });
+
+          function checkScroll() {
+            if (window.scrollY > 400) {
+              topBtn.classList.add('visible');
+            } else {
+              topBtn.classList.remove('visible');
+            }
+          }
+
+          window.addEventListener('scroll', checkScroll, { passive: true });
+          checkScroll();
+        }
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', setupMobileInteractions);
+      } else {
+        setupMobileInteractions();
+      }
+      document.addEventListener('astro:page-load', setupMobileInteractions);
+    </script>
   </body>
 </html>

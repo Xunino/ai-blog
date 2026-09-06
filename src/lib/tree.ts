@@ -124,3 +124,25 @@ export function hasActiveDescendant(node: TreeItem, currentUrl: string): boolean
   }
   return node.children.some((child) => hasActiveDescendant(child, currentUrl));
 }
+
+/**
+ * Trích xuất danh sách tuyến tính các bài viết theo đúng thứ tự đọc của cây danh mục.
+ * Phục vụ cho tính năng điều hướng bài trước / bài tiếp theo (Series navigation).
+ */
+export function getFlatReadingList(tree: TreeItem[]): TreeItem[] {
+  const result: TreeItem[] = [];
+
+  function walk(items: TreeItem[]) {
+    for (const item of items) {
+      if (!item.isFolder && item.url) {
+        result.push(item);
+      }
+      if (item.children.length > 0) {
+        walk(item.children);
+      }
+    }
+  }
+
+  walk(tree);
+  return result;
+}

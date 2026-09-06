@@ -19,10 +19,42 @@ const t = useTranslations(locale);
 
 <div id="search-panel" class="search-panel" hidden role="dialog" aria-modal="true" aria-label={t('search.label')}>
   <div class="search-box">
+    <div class="search-header">
+      <span class="search-title">{t('search.label')}</span>
+      <button id="search-close" class="icon-btn search-close-btn" type="button" aria-label={t('search.close')} title={t('search.close')}>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
     <div id="search-ui"></div>
     <noscript><p class="no-js-note">{t('search.noJs')}</p></noscript>
   </div>
 </div>
+
+<style>
+  .search-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .search-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .search-close-btn {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+  }
+</style>
 
 {/*
   Pagefind chỉ được tải khi người dùng mở ô tìm kiếm.
@@ -31,6 +63,7 @@ const t = useTranslations(locale);
 <script is:inline define:vars={{ locale, placeholder: t('search.placeholder') }}>
   function setupSearch() {
     var openBtn = document.getElementById('search-open');
+    var closeBtn = document.getElementById('search-close');
     var panel = document.getElementById('search-panel');
     if (!openBtn || !panel || openBtn.dataset.bound) return;
     openBtn.dataset.bound = 'true';
@@ -75,6 +108,7 @@ const t = useTranslations(locale);
     }
 
     openBtn.addEventListener('click', open);
+    if (closeBtn) closeBtn.addEventListener('click', close);
 
     panel.addEventListener('click', function (e) {
       if (e.target === panel) close();

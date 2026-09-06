@@ -19,24 +19,41 @@ const current = Astro.url.pathname;
 <header class="site-header" transition:name="site-header">
   <div class="container-shell header-inner">
     <div class="brand-group">
+      <button
+        id="mobile-sidebar-toggle"
+        class="icon-btn mobile-menu-btn"
+        type="button"
+        title={t('nav.menu')}
+        aria-label={t('nav.menu')}
+        aria-expanded="false"
+      >
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
+
       <a class="site-title" href={`/${locale}/`} aria-label={SITE.title[locale]}>
         <Logo size={28} />
-        <span>{SITE.title[locale]}</span>
+        <span class="site-title-text">{SITE.title[locale]}</span>
       </a>
     </div>
 
     <nav class="site-nav" aria-label={SITE.title[locale]}>
-      {
-        NAV_LINKS.map((link) => {
-          const href = `/${locale}/${link.path}${link.path ? '/' : ''}`;
-          const isActive = link.path === '' ? current === href : current.startsWith(href);
-          return (
-            <a class="nav-link" href={href} aria-current={isActive ? 'page' : undefined}>
-              {t(link.key as UIKey)}
-            </a>
-          );
-        })
-      }
+      <div class="desktop-nav-links">
+        {
+          NAV_LINKS.map((link) => {
+            const href = `/${locale}/${link.path}${link.path ? '/' : ''}`;
+            const isActive = link.path === '' ? current === href : current.startsWith(href);
+            return (
+              <a class="nav-link" href={href} aria-current={isActive ? 'page' : undefined}>
+                {t(link.key as UIKey)}
+              </a>
+            );
+          })
+        }
+      </div>
 
       <span class="nav-divider" aria-hidden="true"></span>
 
@@ -48,9 +65,50 @@ const current = Astro.url.pathname;
 </header>
 
 <style>
+  .brand-group {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    min-width: 0;
+  }
+
   .brand-group .site-title {
     display: inline-flex;
     align-items: center;
     gap: var(--space-xs);
+    min-width: 0;
+  }
+
+  .site-title-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .mobile-menu-btn {
+    display: none;
+    flex-shrink: 0;
+  }
+
+  .desktop-nav-links {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+  }
+
+  @media (max-width: 1023px) {
+    .mobile-menu-btn {
+      display: inline-flex;
+    }
+
+    .desktop-nav-links {
+      display: none;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .site-title-text {
+      max-width: 125px;
+    }
   }
 </style>

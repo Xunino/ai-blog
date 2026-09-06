@@ -4,7 +4,7 @@ import path from 'node:path';
 const DIAGRAMS_DIR = 'public/diagrams';
 
 const CSS_THEME = `    <style>
-      :root {
+      svg {
         --bg-card: #ffffff;
         --bg-subtle: #f8f9fa;
         --bg-elevated: #f1f3f5;
@@ -30,7 +30,7 @@ const CSS_THEME = `    <style>
         --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
       }
       @media (prefers-color-scheme: dark) {
-        :root {
+        svg {
           --bg-card: #0d1117;
           --bg-subtle: #161b22;
           --bg-elevated: #1c2128;
@@ -57,6 +57,15 @@ const CSS_THEME = `    <style>
       text { font-family: var(--font-sans); }
       .mono { font-family: var(--font-mono); }
       .bg-plate { fill: var(--bg-card); stroke: var(--border); stroke-width: 1; }
+      .plate { fill: var(--bg-subtle); stroke: var(--border); stroke-width: 1.25; }
+      
+      .actor-card { fill: var(--bg-card); stroke: var(--border-hover); stroke-width: 1.25; }
+      .actor-card-acc { fill: var(--bg-card); stroke: var(--accent); stroke-width: 1.5; }
+      .tag-pill { fill: var(--bg-subtle); stroke: var(--border); stroke-width: 1; }
+      .msg-label-acc { fill: var(--bg-card); stroke: var(--accent); stroke-width: 1.3; }
+      .msg-label-subtle { fill: var(--bg-card); stroke: var(--border-hover); stroke-width: 1.2; }
+      .msg-badge-amber { fill: var(--bg-card); stroke: var(--amber); stroke-width: 1.2; }
+      .line-boundary { stroke: var(--border-hover); stroke-width: 1.2; stroke-dasharray: 6 4; fill: none; }
       
       .box { fill: var(--bg-card); stroke: var(--border-hover); stroke-width: 1.25; }
       .box-subtle { fill: var(--bg-subtle); stroke: var(--border); stroke-width: 1.25; }

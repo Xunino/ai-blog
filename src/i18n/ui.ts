@@ -5,6 +5,8 @@ export const UI = {
   vi: {
     'nav.home': 'Trang chủ',
     'nav.tags': 'Chủ đề',
+    'nav.menu': 'Danh mục',
+    'nav.close': 'Đóng',
     'nav.skipToContent': 'Bỏ qua, đến nội dung chính',
 
     'theme.toggle': 'Đổi giao diện sáng/tối',
@@ -30,6 +32,8 @@ export const UI = {
     'post.readingTime': 'phút đọc',
     'post.tags': 'Chủ đề',
     'post.draft': 'Bản nháp',
+    'post.prev': 'Bài trước',
+    'post.next': 'Bài tiếp theo',
     'post.backToList': 'Tất cả bài viết',
     'post.toc': 'Mục lục bài viết',
 
@@ -63,6 +67,8 @@ export const UI = {
   en: {
     'nav.home': 'Home',
     'nav.tags': 'Topics',
+    'nav.menu': 'Contents',
+    'nav.close': 'Close',
     'nav.skipToContent': 'Skip to main content',
 
     'theme.toggle': 'Toggle light/dark theme',
@@ -88,6 +94,8 @@ export const UI = {
     'post.readingTime': 'min read',
     'post.tags': 'Topics',
     'post.draft': 'Draft',
+    'post.prev': 'Previous article',
+    'post.next': 'Next article',
     'post.backToList': 'All posts',
     'post.toc': 'Table of contents',
 

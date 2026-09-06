@@ -17,7 +17,7 @@ import {
   tagSlug,
   type Post,
 } from '../../../lib/posts';
-import { buildTree } from '../../../lib/tree';
+import { buildTree, getFlatReadingList } from '../../../lib/tree';
 
 export async function getStaticPaths() {
   const paths = [];
@@ -80,6 +80,13 @@ const breadcrumbs = [
   })),
   { label: post.data.sidebarTitle || post.data.title, url: undefined },
 ];
+
+// Danh sách đọc tuyến tính để chuyển bài trước / bài sau
+const flatList = getFlatReadingList(tree);
+const currentPostPath = postPath(post);
+const currentIndex = flatList.findIndex((item) => item.url === currentPostPath);
+const prevItem = currentIndex > 0 ? flatList[currentIndex - 1] : undefined;
+const nextItem = currentIndex >= 0 && currentIndex < flatList.length - 1 ? flatList[currentIndex + 1] : undefined;
 ---
 
 <Base
@@ -177,6 +184,30 @@ const breadcrumbs = [
             <Content />
           </div>
         </article>
+
+        {/* Điều hướng bộ bài viết: Bài trước & Bài sau */}
+        {
+          (prevItem || nextItem) && (
+            <nav class="series-nav" aria-label="Series navigation">
+              {prevItem ? (
+                <a href={prevItem.url} class="series-nav-card prev">
+                  <span class="series-nav-dir">&larr; {t('post.prev')}</span>
+                  <span class="series-nav-title">{prevItem.title}</span>
+                </a>
+              ) : (
+                <div class="series-nav-empty" aria-hidden="true" />
+              )}
+              {nextItem ? (
+                <a href={nextItem.url} class="series-nav-card next">
+                  <span class="series-nav-dir">{t('post.next')} &rarr;</span>
+                  <span class="series-nav-title">{nextItem.title}</span>
+                </a>
+              ) : (
+                <div class="series-nav-empty" aria-hidden="true" />
+              )}
+            </nav>
+          )
+        }
 
         <nav class="post-footer-nav" aria-label={t('post.backToList')}>
           <a class="back-link" href={`/${locale}/`}>
