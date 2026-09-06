@@ -1,0 +1,35 @@
+---
+import { useTranslations, otherLocale } from '../i18n/ui';
+import type { Locale } from '../../site.config';
+
+interface Props {
+  locale: Locale;
+  /** Đường dẫn tương ứng ở ngôn ngữ kia. Không có thì về trang chủ ngôn ngữ đó. */
+  altPath?: string;
+}
+
+const { locale, altPath } = Astro.props;
+const t = useTranslations(locale);
+const other = otherLocale(locale);
+const href = altPath ?? `/${other}/`;
+---
+
+<a class="lang-switch" href={href} hreflang={other} lang={other} title={t('lang.switchTo')}>
+  <span class="lang-full">{t('lang.switchTo')}</span>
+  <span class="lang-short" aria-hidden="true">{other.toUpperCase()}</span>
+</a>
+
+<style>
+  .lang-short {
+    display: none;
+  }
+
+  @media (max-width: 640px) {
+    .lang-full {
+      display: none;
+    }
+    .lang-short {
+      display: inline;
+    }
+  }
+</style>

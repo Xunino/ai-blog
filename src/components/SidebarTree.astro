@@ -1,0 +1,49 @@
+---
+import TreeNav from './TreeNav.astro';
+import type { TreeItem } from '../lib/tree';
+import type { Locale } from '../../site.config';
+
+interface Props {
+  tree: TreeItem[];
+  currentUrl: string;
+  locale: Locale;
+}
+
+const { tree, currentUrl, locale } = Astro.props;
+const title = locale === 'vi' ? 'Nội dung' : 'Contents';
+---
+
+<aside class="sidebar-tree-rail" aria-label="Knowledge base navigation" transition:name="sidebar-tree">
+  <div class="sidebar-tree-header">
+    <span>{title}</span>
+  </div>
+
+  <nav class="sidebar-tree-content">
+    <TreeNav items={tree} currentUrl={currentUrl} />
+  </nav>
+</aside>
+
+<style>
+  .sidebar-tree-rail {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .sidebar-tree-header {
+    padding: 0.35rem 0.5rem 0.7rem;
+    margin-bottom: 0.15rem;
+    color: var(--text);
+    font-size: 0.82rem;
+    font-weight: 650;
+    line-height: 1.4;
+  }
+
+  .sidebar-tree-content {
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-hover) transparent;
+    padding-inline-end: 0.2rem;
+    padding-bottom: var(--space-xl);
+  }
+</style>

@@ -1,0 +1,46 @@
+---
+import type { Locale } from '../../site.config';
+import { useTranslations, formatDate } from '../i18n/ui';
+import { postPath, tagSlug, readingTime, type Post } from '../lib/posts';
+
+interface Props {
+  post: Post;
+  locale: Locale;
+}
+
+const { post, locale } = Astro.props;
+const t = useTranslations(locale);
+const href = postPath(post);
+const minutes = readingTime(post.body);
+---
+
+<li class="post-card">
+  <div class="post-card-meta">
+    <time datetime={post.data.pubDate.toISOString()}>
+      {formatDate(post.data.pubDate, locale)}
+    </time>
+    <span class="meta-dot" aria-hidden="true">·</span>
+    <span class="badge-reading-time">{minutes} {t('post.readingTime')}</span>
+    {post.data.draft && <span class="badge">{t('post.draft')}</span>}
+  </div>
+
+  <h2><a href={href}>{post.data.title}</a></h2>
+
+  <p class="post-card-desc">{post.data.description}</p>
+
+  {
+    post.data.tags.length > 0 && (
+      <div class="post-card-footer">
+        <ul class="tag-list">
+          {post.data.tags.map((tag) => (
+            <li>
+              <a class="tag" href={`/${locale}/tags/${tagSlug(tag)}/`}>
+                #{tag}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    )
+  }
+</li>

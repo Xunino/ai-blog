@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <radialGradient id="og-glow" cx="80%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#0284c7" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#0284c7" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="og-top" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0284c7" stop-opacity="0.85"/>
+      <stop offset="100%" stop-color="#38bdf8" stop-opacity="0.95"/>
+    </linearGradient>
+    <linearGradient id="og-left" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0369a1" stop-opacity="0.85"/>
+      <stop offset="100%" stop-color="#082f49" stop-opacity="0.95"/>
+    </linearGradient>
+    <linearGradient id="og-right" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0ea5e9" stop-opacity="0.75"/>
+      <stop offset="100%" stop-color="#0369a1" stop-opacity="0.9"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="#080c14"/>
+  <!-- Ambient glow behind the logo -->
+  <rect width="1200" height="630" fill="url(#og-glow)"/>
+  <!-- Top decorative accent line -->
+  <rect x="0" y="0" width="1200" height="4" fill="#38bdf8"/>
+
+  <!-- Left Content: Brand Name & Tagline -->
+  <text x="100" y="270" font-family="system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif" font-size="76" font-weight="800" fill="#f8fafc" letter-spacing="-0.03em">The Latent Space</text>
+  <text x="100" y="340" font-family="system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif" font-size="28" font-weight="400" fill="#94a3b8">Giai ma AI, kien truc phan mem va nhung vung tri thuc thu vi.</text>
+  <text x="100" y="390" font-family="system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif" font-size="22" font-weight="400" fill="#64748b">Exploring AI, software architecture, and the spaces between.</text>
+
+  <!-- Author stamp -->
+  <text x="100" y="520" font-family="system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif" font-size="20" font-weight="600" fill="#38bdf8">xunino.dev</text>
+
+  <!-- Right: 3D Isometric Latent Manifold Emblem (scaled 7.5x from 32x32) -->
+  <!-- Center is at x=950, y=315, box is 240x240 from x=830, y=195 -->
+  <g transform="translate(830, 195) scale(7.5)">
+    <rect width="32" height="32" rx="7.5" fill="#0b1324" stroke="#1e293b" stroke-width="0.8"/>
+    <polygon points="16,6 25,11 16,16 7,11" fill="url(#og-top)"/>
+    <polygon points="7,11 16,16 16,26 7,21" fill="url(#og-left)"/>
+    <polygon points="16,16 25,11 25,21 16,26" fill="url(#og-right)"/>
+    <line x1="7" y1="11" x2="16" y2="16" stroke="#bae6fd" stroke-width="1" stroke-linecap="round"/>
+    <line x1="25" y1="11" x2="16" y2="16" stroke="#bae6fd" stroke-width="1" stroke-linecap="round"/>
+    <line x1="16" y1="26" x2="16" y2="16" stroke="#bae6fd" stroke-width="1" stroke-linecap="round"/>
+    <polygon points="16,6 25,11 25,21 16,26 7,21 7,11" fill="none" stroke="#38bdf8" stroke-width="1.2" stroke-linejoin="round"/>
+    <circle cx="16" cy="6" r="1.2" fill="#e0f2fe"/>
+    <circle cx="25" cy="11" r="1.2" fill="#e0f2fe"/>
+    <circle cx="25" cy="21" r="1.2" fill="#e0f2fe"/>
+    <circle cx="16" cy="26" r="1.2" fill="#e0f2fe"/>
+    <circle cx="7" cy="21" r="1.2" fill="#e0f2fe"/>
+    <circle cx="7" cy="11" r="1.2" fill="#e0f2fe"/>
+    <circle cx="16" cy="16" r="3" fill="#38bdf8" opacity="0.5"/>
+    <circle cx="16" cy="16" r="1.6" fill="#ffffff"/>
+  </g>
+</svg>

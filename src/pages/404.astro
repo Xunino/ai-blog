@@ -1,0 +1,20 @@
+---
+import Base from '../layouts/Base.astro';
+import { DEFAULT_LOCALE } from '../../site.config';
+import { useTranslations } from '../i18n/ui';
+
+// Nginx tra ve /404.html cho moi duong dan khong khop.
+// Dung ngon ngu mac dinh vi luc nay chua biet ngu canh.
+const locale = DEFAULT_LOCALE;
+const t = useTranslations(locale);
+---
+
+<Base locale={locale} title={t('404.title')} noindex>
+  <div class="center-page">
+    <h1>404</h1>
+    <p>{t('404.description')}</p>
+    <p style="margin-top:1.5rem">
+      <a href={`/${locale}/`}>{t('404.backHome')}</a>
+    </p>
+  </div>
+</Base>

@@ -1,0 +1,56 @@
+---
+import Logo from './Logo.astro';
+import ThemeToggle from './ThemeToggle.astro';
+import LangSwitch from './LangSwitch.astro';
+import Search from './Search.astro';
+import { SITE, NAV_LINKS, type Locale } from '../../site.config';
+import { useTranslations, type UIKey } from '../i18n/ui';
+
+interface Props {
+  locale: Locale;
+  altPath?: string;
+}
+
+const { locale, altPath } = Astro.props;
+const t = useTranslations(locale);
+const current = Astro.url.pathname;
+---
+
+<header class="site-header" transition:name="site-header">
+  <div class="container-shell header-inner">
+    <div class="brand-group">
+      <a class="site-title" href={`/${locale}/`} aria-label={SITE.title[locale]}>
+        <Logo size={28} />
+        <span>{SITE.title[locale]}</span>
+      </a>
+    </div>
+
+    <nav class="site-nav" aria-label={SITE.title[locale]}>
+      {
+        NAV_LINKS.map((link) => {
+          const href = `/${locale}/${link.path}${link.path ? '/' : ''}`;
+          const isActive = link.path === '' ? current === href : current.startsWith(href);
+          return (
+            <a class="nav-link" href={href} aria-current={isActive ? 'page' : undefined}>
+              {t(link.key as UIKey)}
+            </a>
+          );
+        })
+      }
+
+      <span class="nav-divider" aria-hidden="true"></span>
+
+      <Search locale={locale} />
+      <ThemeToggle locale={locale} />
+      <LangSwitch locale={locale} altPath={altPath} />
+    </nav>
+  </div>
+</header>
+
+<style>
+  .brand-group .site-title {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+  }
+</style>

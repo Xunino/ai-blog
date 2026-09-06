@@ -1,0 +1,93 @@
+---
+import { useTranslations } from '../i18n/ui';
+import type { Locale } from '../../site.config';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+---
+
+<button id="search-open" class="icon-btn" type="button" title={`${t('search.open')} (/)`} aria-label={t('search.open')}>
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+    <circle cx="11" cy="11" r="7"></circle>
+    <path d="m20 20-3.5-3.5"></path>
+  </svg>
+  <span class="kbd-shortcut" aria-hidden="true">/</span>
+</button>
+
+<div id="search-panel" class="search-panel" hidden role="dialog" aria-modal="true" aria-label={t('search.label')}>
+  <div class="search-box">
+    <div id="search-ui"></div>
+    <noscript><p class="no-js-note">{t('search.noJs')}</p></noscript>
+  </div>
+</div>
+
+{/*
+  Pagefind chỉ được tải khi người dùng mở ô tìm kiếm.
+  Vào trang bình thường: 0 byte cho tính năng này.
+*/}
+<script is:inline define:vars={{ locale, placeholder: t('search.placeholder') }}>
+  function setupSearch() {
+    var openBtn = document.getElementById('search-open');
+    var panel = document.getElementById('search-panel');
+    if (!openBtn || !panel || openBtn.dataset.bound) return;
+    openBtn.dataset.bound = 'true';
+
+    var loaded = false;
+
+    function close() {
+      panel.hidden = true;
+      openBtn.focus();
+    }
+
+    async function open() {
+      panel.hidden = false;
+
+      if (!loaded) {
+        loaded = true;
+        try {
+          var css = document.createElement('link');
+          css.rel = 'stylesheet';
+          css.href = '/pagefind/pagefind-ui.css';
+          document.head.appendChild(css);
+
+          await import('/pagefind/pagefind-ui.js');
+          new window.PagefindUI({
+            element: '#search-ui',
+            showSubResults: true,
+            showImages: false,
+            resetStyles: true,
+            showFilters: false,
+            translations: { placeholder: placeholder },
+            filters: { lang: locale },
+          });
+        } catch (e) {
+          document.getElementById('search-ui').textContent =
+            'Search index not built yet — run: pnpm build';
+          return;
+        }
+      }
+
+      var input = panel.querySelector('input');
+      if (input) input.focus();
+    }
+
+    openBtn.addEventListener('click', open);
+
+    panel.addEventListener('click', function (e) {
+      if (e.target === panel) close();
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && !panel.hidden) close();
+      if (e.key === '/' && panel.hidden && !/^(INPUT|TEXTAREA)$/.test(document.activeElement?.tagName || '')) {
+        e.preventDefault();
+        open();
+      }
+    });
+  }
+  setupSearch();
+  document.addEventListener('astro:page-load', setupSearch);
+</script>

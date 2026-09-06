@@ -1,0 +1,93 @@
+---
+import Base from '../../../../layouts/Base.astro';
+import PostCard from '../../../../components/PostCard.astro';
+import Pagination from '../../../../components/Pagination.astro';
+import SidebarTree from '../../../../components/SidebarTree.astro';
+import CompactFooter from '../../../../components/CompactFooter.astro';
+import { LOCALES, POSTS_PER_PAGE, type Locale } from '../../../../../site.config';
+import { useTranslations, otherLocale } from '../../../../i18n/ui';
+import { getPosts, getTags, getPostsByTag, tagSlug, type Post } from '../../../../lib/posts';
+import { buildTree } from '../../../../lib/tree';
+
+export async function getStaticPaths() {
+  const paths = [];
+
+  for (const lang of LOCALES) {
+    const tags = await getTags(lang);
+
+    for (const { tag } of tags) {
+      const posts = await getPostsByTag(lang, tag);
+      const lastPage = Math.max(1, Math.ceil(posts.length / POSTS_PER_PAGE));
+
+      paths.push({
+        params: { lang, tag: tagSlug(tag) },
+        props: {
+          tag,
+          posts: posts.slice(0, POSTS_PER_PAGE),
+          total: posts.length,
+          lastPage,
+        },
+      });
+    }
+  }
+
+  return paths;
+}
+
+interface Props {
+  tag: string;
+  posts: Post[];
+  total: number;
+  lastPage: number;
+}
+
+const locale = Astro.params.lang as Locale;
+const { tag, posts, total, lastPage } = Astro.props;
+const t = useTranslations(locale);
+
+const allPosts = await getPosts(locale);
+const tree = buildTree(allPosts, locale);
+---
+
+<Base
+  locale={locale}
+  title={`#${tag}`}
+  altPath={`/${otherLocale(locale)}/tags/`}
+  container="none"
+  showFooter={false}
+>
+  <div class="app-shell home-shell">
+    <div class="shell-sidebar-col">
+      <SidebarTree tree={tree} currentUrl={Astro.url.pathname} locale={locale} />
+    </div>
+
+    <div class="shell-content-col">
+      <div class="shell-content-inner">
+        <header style="margin-bottom: var(--space-xl);">
+          <div style="display: flex; align-items: center; gap: var(--space-xs); margin-bottom: var(--space-xs);">
+            <a href={`/${locale}/tags/`} style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem;">
+              &larr; {t('tags.title')}
+            </a>
+          </div>
+          <h1 style="margin-bottom: var(--space-2xs); font-size: 2.25rem;">#{tag}</h1>
+          <p style="color: var(--text-muted); font-size: 0.95rem;">
+            {total} {t('tags.postCount')}
+          </p>
+        </header>
+
+        <ul class="post-list">
+          {posts.map((post) => <PostCard post={post} locale={locale} />)}
+        </ul>
+
+        <Pagination
+          locale={locale}
+          currentPage={1}
+          lastPage={lastPage}
+          nextUrl={lastPage > 1 ? `/${locale}/tags/${tagSlug(tag)}/2/` : undefined}
+        />
+
+        <CompactFooter locale={locale} />
+      </div>
+    </div>
+  </div>
+</Base>

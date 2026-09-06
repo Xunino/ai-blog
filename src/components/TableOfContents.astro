@@ -1,0 +1,181 @@
+---
+import type { MarkdownHeading } from 'astro';
+import { useTranslations } from '../i18n/ui';
+import type { Locale } from '../../site.config';
+
+interface Props {
+  headings: MarkdownHeading[];
+  locale: Locale;
+  variant?: 'sticky' | 'inline';
+}
+
+const { headings, locale, variant = 'sticky' } = Astro.props;
+const t = useTranslations(locale);
+const filtered = headings.filter((heading) => heading.depth === 2 || heading.depth === 3);
+---
+
+{
+  filtered.length >= 2 && (
+    variant === 'sticky' ? (
+      <nav class="toc-rail" aria-label={t('toc.title')} data-pagefind-ignore>
+        <p class="toc-heading">{t('toc.title')}</p>
+        <ol class="toc-list">
+          {filtered.map((heading) => (
+            <li class={`toc-item depth-${heading.depth}`}>
+              <a class="toc-link" href={`#${heading.slug}`}>{heading.text}</a>
+            </li>
+          ))}
+        </ol>
+        <a class="toc-top-link" href="#main">
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+            <path d="m6.5 11.5 3.5-3.5 3.5 3.5"></path>
+          </svg>
+          {t('toc.backToTop')}
+        </a>
+      </nav>
+    ) : (
+      <nav class="toc-inline" aria-label={t('toc.title')} data-pagefind-ignore>
+        <details>
+          <summary>
+            <span>{t('toc.title')}</span>
+            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+              <path d="m7 8 3 3 3-3"></path>
+            </svg>
+          </summary>
+          <ol class="toc-list">
+            {filtered.map((heading) => (
+              <li class={`toc-item depth-${heading.depth}`}>
+                <a class="toc-link" href={`#${heading.slug}`}>{heading.text}</a>
+              </li>
+            ))}
+          </ol>
+        </details>
+      </nav>
+    )
+  )
+}
+
+<style>
+  .toc-rail {
+    padding: 0.4rem 0 1rem 1rem;
+    border-inline-start: 1px solid var(--border);
+  }
+
+  .toc-heading {
+    margin: 0 0 0.65rem;
+    color: var(--text);
+    font-size: 0.82rem;
+    font-weight: 650;
+    line-height: 1.4;
+  }
+
+  .toc-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    margin: 0;
+    padding: 0;
+  }
+
+  .toc-item {
+    margin: 0;
+  }
+
+  .toc-link {
+    display: block;
+    padding: 0.34rem 0.45rem;
+    border-radius: 5px;
+    color: var(--text-muted);
+    font-size: 0.83rem;
+    line-height: 1.45;
+    text-decoration: none;
+    transition: color 0.15s ease, background-color 0.15s ease;
+  }
+
+  .toc-link:hover {
+    color: var(--text);
+    background: var(--bg-subtle);
+  }
+
+  .depth-3 .toc-link {
+    padding-inline-start: 1rem;
+    color: var(--text-subtle);
+    font-size: 0.79rem;
+  }
+
+  .toc-top-link {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    margin-top: 0.75rem;
+    padding: 0.7rem 0.4rem 0;
+    border-top: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 0.78rem;
+    font-weight: 500;
+    text-decoration: none;
+  }
+
+  .toc-top-link:hover {
+    color: var(--text);
+  }
+
+  .toc-top-link svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .toc-inline {
+    display: none;
+    margin-block: 0 1.75rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .toc-inline details {
+    margin: 0;
+  }
+
+  .toc-inline summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.75rem 0;
+    color: var(--text);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .toc-inline summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .toc-inline summary svg {
+    width: 16px;
+    height: 16px;
+    transition: transform 0.18s ease;
+  }
+
+  .toc-inline details[open] summary svg {
+    transform: rotate(180deg);
+  }
+
+  .toc-inline .toc-list {
+    padding-bottom: 0.75rem;
+  }
+
+  @media (min-width: 1280px) {
+    .toc-inline {
+      display: none !important;
+    }
+  }
+
+  @media (max-width: 1279px) {
+    .toc-inline {
+      display: block;
+    }
+  }
+</style>

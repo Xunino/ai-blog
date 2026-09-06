@@ -1,0 +1,97 @@
+---
+import Base from '../../../../layouts/Base.astro';
+import PostCard from '../../../../components/PostCard.astro';
+import Pagination from '../../../../components/Pagination.astro';
+import SidebarTree from '../../../../components/SidebarTree.astro';
+import CompactFooter from '../../../../components/CompactFooter.astro';
+import { LOCALES, POSTS_PER_PAGE, type Locale } from '../../../../../site.config';
+import { useTranslations, otherLocale } from '../../../../i18n/ui';
+import { getPosts, getTags, getPostsByTag, tagSlug, type Post } from '../../../../lib/posts';
+import { buildTree } from '../../../../lib/tree';
+
+export async function getStaticPaths() {
+  const paths = [];
+
+  for (const lang of LOCALES) {
+    const tags = await getTags(lang);
+
+    for (const { tag } of tags) {
+      const posts = await getPostsByTag(lang, tag);
+      const lastPage = Math.max(1, Math.ceil(posts.length / POSTS_PER_PAGE));
+
+      // Trang 1 đã có ở [tag]/index.astro nên chỉ sinh từ trang 2
+      for (let page = 2; page <= lastPage; page++) {
+        paths.push({
+          params: { lang, tag: tagSlug(tag), page: String(page) },
+          props: {
+            tag,
+            posts: posts.slice((page - 1) * POSTS_PER_PAGE, page * POSTS_PER_PAGE),
+            currentPage: page,
+            lastPage,
+          },
+        });
+      }
+    }
+  }
+
+  return paths;
+}
+
+interface Props {
+  tag: string;
+  posts: Post[];
+  currentPage: number;
+  lastPage: number;
+}
+
+const locale = Astro.params.lang as Locale;
+const { tag, posts, currentPage, lastPage } = Astro.props as Props;
+const t = useTranslations(locale);
+
+const allPosts = await getPosts(locale);
+const tree = buildTree(allPosts, locale);
+
+const base = `/${locale}/tags/${tagSlug(tag)}`;
+const prevUrl = currentPage === 2 ? `${base}/` : `${base}/${currentPage - 1}/`;
+const nextUrl = currentPage < lastPage ? `${base}/${currentPage + 1}/` : undefined;
+---
+
+<Base
+  locale={locale}
+  title={`#${tag} — ${t('pagination.page')} ${currentPage}`}
+  altPath={`/${otherLocale(locale)}/tags/`}
+  container="none"
+  showFooter={false}
+  noindex={currentPage > 1}
+>
+  <div class="app-shell home-shell">
+    <div class="shell-sidebar-col">
+      <SidebarTree tree={tree} currentUrl={Astro.url.pathname} locale={locale} />
+    </div>
+
+    <div class="shell-content-col">
+      <div class="shell-content-inner">
+        <header style="margin-bottom: var(--space-xl);">
+          <h1 style="margin-bottom: var(--space-2xs); font-size: 2.25rem;">#{tag}</h1>
+          <p style="color: var(--text-muted);">
+            {t('pagination.page')} {currentPage} / {lastPage}
+          </p>
+        </header>
+
+        <ul class="post-list">
+          {posts.map((post) => <PostCard post={post} locale={locale} />)}
+        </ul>
+
+        <Pagination
+          locale={locale}
+          currentPage={currentPage}
+          lastPage={lastPage}
+          prevUrl={prevUrl}
+          nextUrl={nextUrl}
+        />
+
+        <CompactFooter locale={locale} />
+      </div>
+    </div>
+  </div>
+</Base>

@@ -1,0 +1,174 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 440" width="100%" height="100%">
+  <defs>
+    <style>
+      :root {
+        --bg-card: #ffffff;
+        --bg-subtle: #f8f9fa;
+        --bg-elevated: #f1f3f5;
+        --border: #e2e6ea;
+        --border-hover: #c4cacf;
+        --text: #1a1f26;
+        --text-muted: #57606a;
+        --text-subtle: #6e7781;
+        --accent: #0b79a8;
+        --accent-subtle: rgba(11, 121, 168, 0.08);
+        --green: #1a7f37;
+        --green-bg: rgba(26, 127, 55, 0.08);
+        --green-subtle: rgba(26, 127, 55, 0.08);
+        --bad: #cf222e;
+        --bad-bg: rgba(207, 34, 46, 0.08);
+        --red: #cf222e;
+        --red-bg: rgba(207, 34, 46, 0.08);
+        --amber: #9a6700;
+        --amber-bg: rgba(154, 103, 0, 0.08);
+        --purple: #8250df;
+        --purple-bg: rgba(130, 80, 223, 0.08);
+        --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg-card: #0d1117;
+          --bg-subtle: #161b22;
+          --bg-elevated: #1c2128;
+          --border: #30363d;
+          --border-hover: #6e7681;
+          --text: #f0f6fc;
+          --text-muted: #8b949e;
+          --text-subtle: #6e7681;
+          --accent: #61c7ef;
+          --accent-subtle: rgba(97, 199, 239, 0.12);
+          --green: #3fb950;
+          --green-bg: rgba(63, 185, 80, 0.12);
+          --green-subtle: rgba(63, 185, 80, 0.12);
+          --bad: #f85149;
+          --bad-bg: rgba(248, 81, 73, 0.12);
+          --red: #f85149;
+          --red-bg: rgba(248, 81, 73, 0.12);
+          --amber: #d29922;
+          --amber-bg: rgba(210, 153, 34, 0.12);
+          --purple: #bc8cff;
+          --purple-bg: rgba(188, 140, 255, 0.12);
+        }
+      }
+      text { font-family: var(--font-sans); }
+      .mono { font-family: var(--font-mono); }
+      .bg-plate { fill: var(--bg-card); stroke: var(--border); stroke-width: 1; }
+      
+      .actor-card { fill: var(--bg-card); stroke: var(--border-hover); stroke-width: 1.25; }
+      .actor-card-acc { fill: var(--bg-card); stroke: var(--accent); stroke-width: 1.5; }
+      .tag-pill { fill: var(--bg-subtle); stroke: var(--border); stroke-width: 1; }
+      
+      .box { fill: var(--bg-card); stroke: var(--border-hover); stroke-width: 1.25; }
+      .box-subtle { fill: var(--bg-subtle); stroke: var(--border); stroke-width: 1.25; }
+      .box-acc { fill: var(--accent-subtle); stroke: var(--accent); stroke-width: 1.4; }
+      
+      /* Solid masked labels that sit ABOVE arrows */
+      .msg-label-acc { fill: var(--bg-card); stroke: var(--accent); stroke-width: 1.3; }
+      .msg-label-subtle { fill: var(--bg-card); stroke: var(--border-hover); stroke-width: 1.2; }
+      .msg-badge-amber { fill: var(--bg-card); stroke: var(--amber); stroke-width: 1.2; }
+      
+      .title { font-size: 13px; font-weight: 700; fill: var(--text); }
+      .title-green { font-size: 13px; font-weight: 700; fill: var(--green); }
+      .text-main { font-size: 11.5px; font-weight: 600; fill: var(--text); }
+      .text-sub { font-size: 10px; fill: var(--text-muted); }
+      .text-acc { font-size: 11px; font-weight: 700; fill: var(--accent); }
+      .header { font-size: 9.5px; font-weight: 700; letter-spacing: 0.1em; fill: var(--text-subtle); }
+      .tag-text { font-size: 8.5px; font-weight: 700; letter-spacing: 0.08em; fill: var(--text-subtle); }
+      .tag-amber { font-size: 9.5px; font-weight: 700; letter-spacing: 0.06em; fill: var(--amber); }
+      
+      .life { stroke: var(--border-hover); stroke-width: 1.2; stroke-dasharray: 4 4; fill: none; }
+      .line { stroke: var(--border-hover); stroke-width: 1.4; fill: none; }
+      .line-acc { stroke: var(--accent); stroke-width: 1.6; fill: none; }
+      .line-boundary { stroke: var(--border-hover); stroke-width: 1.2; stroke-dasharray: 6 4; fill: none; }
+    </style>
+    <marker id="arr" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <polygon points="0 1, 9 5, 0 9" fill="var(--border-hover)"/>
+    </marker>
+    <marker id="arr-acc" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <polygon points="0 1, 9 5, 0 9" fill="var(--accent)"/>
+    </marker>
+  </defs>
+
+  <rect width="100%" height="100%" rx="8" class="bg-plate"/>
+
+  <!-- ================= LIFELINES ================= -->
+  <!-- Lifelines end at y=350, well above the bottom outcome card at y=370 -->
+  <line x1="150" y1="76" x2="150" y2="350" class="life"/>
+  <line x1="450" y1="76" x2="450" y2="350" class="life"/>
+  <line x1="750" y1="76" x2="750" y2="350" class="life"/>
+
+  <!-- ================= ACTOR CARDS ================= -->
+  <!-- Actor 1: User -->
+  <rect x="70" y="20" width="160" height="56" rx="6" class="actor-card"/>
+  <rect x="78" y="26" width="46" height="14" rx="2" class="tag-pill"/>
+  <text x="101" y="37" text-anchor="middle" class="tag-text mono">HUMAN</text>
+  <text x="150" y="53" text-anchor="middle" class="title">Người Dùng</text>
+  <text x="150" y="67" text-anchor="middle" class="text-sub">Giao diện / Dòng lệnh</text>
+
+  <!-- Actor 2: Inbox FIFO -->
+  <rect x="370" y="20" width="160" height="56" rx="6" class="actor-card"/>
+  <rect x="378" y="26" width="56" height="14" rx="2" class="tag-pill"/>
+  <text x="406" y="37" text-anchor="middle" class="tag-text mono">HỘP THƯ</text>
+  <text x="450" y="53" text-anchor="middle" class="title mono">Inbox FIFO</text>
+  <text x="450" y="67" text-anchor="middle" class="text-sub">Hàng đợi gom tin hợp lệ</text>
+
+  <!-- Actor 3: Agent Runtime -->
+  <rect x="670" y="20" width="160" height="56" rx="6" class="actor-card-acc"/>
+  <rect x="678" y="26" width="56" height="14" rx="2" class="box-acc"/>
+  <text x="706" y="37" text-anchor="middle" class="tag-text mono" fill="var(--accent)">RUNTIME</text>
+  <text x="750" y="53" text-anchor="middle" class="title">Agent Runtime</text>
+  <text x="750" y="67" text-anchor="middle" class="text-sub">Bộ điều phối · Tools · LLM</text>
+
+  <!-- ================= TIMELINE EVENTS (TOP TO BOTTOM) ================= -->
+
+  <!-- 1. Step 1 Tool Calls Running on Runtime (y=96..176) -->
+  <rect x="744" y="96" width="12" height="80" rx="3" class="box"/>
+  <rect x="764" y="104" width="124" height="42" rx="4" class="box-subtle"/>
+  <text x="774" y="121" class="text-main">Đang chạy Step 1</text>
+  <text x="774" y="136" class="text-sub">thực thi công cụ...</text>
+
+  <!-- 2. Mid-flight Steer Message (User -> Inbox) -->
+  <!-- Label sits 8px ABOVE arrow: label y=114..136, arrow y=144 -->
+  <rect x="180" y="114" width="230" height="22" rx="4" class="msg-label-acc"/>
+  <text x="295" y="129" text-anchor="middle" class="text-acc mono">steer("Xem config/ trước")</text>
+  <line x1="150" y1="144" x2="442" y2="144" class="line-acc" marker-end="url(#arr-acc)"/>
+
+  <!-- Steer queued in Inbox Activation Bar (y=144..296) -->
+  <rect x="444" y="144" width="12" height="152" rx="3" class="box-acc"/>
+  <!-- Status badge to the right of Inbox bar (y=148..170) -->
+  <rect x="466" y="148" width="166" height="22" rx="4" class="msg-badge-amber"/>
+  <text x="549" y="163" text-anchor="middle" class="tag-amber mono">ĐÃ XẾP HÀNG · next-step</text>
+
+  <!-- ================= PRE-STEP BOUNDARY (y=196) ================= -->
+  <!-- Clear 26px gap from badge above (ends at 170) and 24px gap to label below (starts at 220) -->
+  <line x1="70" y1="196" x2="830" y2="196" class="line-boundary"/>
+  <rect x="250" y="184" width="400" height="24" rx="4" class="box-subtle"/>
+  <text x="450" y="200" text-anchor="middle" class="header mono">RANH GIỚI BƯỚC TIẾP THEO (PRE-STEP BOUNDARY)</text>
+
+  <!-- ================= CONTINUATION AFTER BOUNDARY ================= -->
+
+  <!-- 3. Boundary Reached: Runtime calls claim('next-step') (Runtime -> Inbox) -->
+  <!-- Label sits 8px ABOVE arrow: label y=220..242, arrow y=250 -->
+  <rect x="480" y="220" width="240" height="22" rx="4" class="msg-label-subtle"/>
+  <text x="600" y="235" text-anchor="middle" class="text-main mono">Step 1 hoàn tất → claim('next-step')</text>
+  <line x1="744" y1="250" x2="458" y2="250" class="line" marker-end="url(#arr)"/>
+
+  <!-- 4. Inbox returns steer batch to Runtime (Inbox -> Runtime) -->
+  <!-- Label sits 8px ABOVE arrow: label y=270..292, arrow y=300 -->
+  <rect x="490" y="270" width="216" height="22" rx="4" class="msg-label-acc"/>
+  <text x="598" y="285" text-anchor="middle" class="text-acc mono">Trả lô tin: [lời nhắc bẻ lái]</text>
+  <line x1="456" y1="300" x2="736" y2="300" class="line-acc" marker-end="url(#arr-acc)"/>
+
+  <!-- 5. Step 2 Activation on Runtime (y=300..350) -->
+  <rect x="744" y="300" width="12" height="50" rx="3" class="box-acc"/>
+  <text x="768" y="318" class="text-main" fill="var(--accent)">Step 2 Khởi Động</text>
+  <text x="768" y="334" class="text-sub">áp dụng hướng mới</text>
+
+  <!-- ================= OUTCOME SUMMARY CARD (y=370..422) ================= -->
+  <rect x="70" y="370" width="760" height="52" rx="6" fill="var(--green-bg)" stroke="var(--green)" stroke-width="1.3"/>
+  <circle cx="98" cy="396" r="10" fill="var(--green)"/>
+  <path d="M 94 396 L 97 399 L 103 393" stroke="#ffffff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="120" y="391" class="title-green">Step 2 Chạy Với Hướng Mới</text>
+  <text x="120" y="409" class="text-sub">Bảo toàn trọn vẹn 4 phút suy luận trước đó · Lời nhắc bẻ lái nạp vào prompt bước tiếp theo</text>
+</svg>

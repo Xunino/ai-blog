@@ -1,0 +1,25 @@
+---
+import type { Locale } from '../../site.config';
+import { useTranslations } from '../i18n/ui';
+
+interface Props {
+  locale: Locale;
+  prevUrl?: string;
+  nextUrl?: string;
+  currentPage: number;
+  lastPage: number;
+}
+
+const { locale, prevUrl, nextUrl, currentPage, lastPage } = Astro.props;
+const t = useTranslations(locale);
+---
+
+{
+  lastPage > 1 && (
+    <nav class="pagination" aria-label={t('pagination.page')}>
+      {prevUrl ? <a href={prevUrl} rel="prev">&larr; {t('pagination.prev')}</a> : <span />}
+      <span>{t('pagination.page')} {currentPage} / {lastPage}</span>
+      {nextUrl ? <a href={nextUrl} rel="next">{t('pagination.next')} &rarr;</a> : <span />}
+    </nav>
+  )
+}

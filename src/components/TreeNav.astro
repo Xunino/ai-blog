@@ -1,0 +1,150 @@
+---
+import type { TreeItem } from '../lib/tree';
+import { hasActiveDescendant } from '../lib/tree';
+
+interface Props {
+  items: TreeItem[];
+  currentUrl: string;
+  depth?: number;
+}
+
+const { items, currentUrl, depth = 0 } = Astro.props;
+---
+
+<ul class={`tree-list depth-${depth}`}>
+  {
+    items.map((item) => {
+      if (item.isFolder) {
+        const isOpen = hasActiveDescendant(item, currentUrl) || depth === 0;
+        return (
+          <li class="tree-folder-item">
+            <details class="tree-folder" open={isOpen}>
+              <summary class="tree-summary">
+                <svg class="chevron-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+                  <path d="m7.5 6.5 3.5 3.5-3.5 3.5"></path>
+                </svg>
+                <span class="folder-title">{item.title}</span>
+              </summary>
+              <div class="tree-folder-body">
+                <Astro.self items={item.children} currentUrl={currentUrl} depth={depth + 1} />
+              </div>
+            </details>
+          </li>
+        );
+      }
+
+      const isActive = item.url === currentUrl || item.url === `${currentUrl}/`;
+      return (
+        <li class="tree-leaf-item">
+          <a
+            href={item.url}
+            class={`tree-link ${isActive ? 'active' : ''}`}
+            aria-current={isActive ? 'page' : undefined}
+          >
+            <span class="leaf-title">{item.title}</span>
+          </a>
+        </li>
+      );
+    })
+  }
+</ul>
+
+<style>
+  .tree-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.05rem;
+    margin: 0;
+    padding: 0;
+  }
+
+  .tree-folder-item,
+  .tree-leaf-item {
+    margin: 0;
+  }
+
+  .tree-folder {
+    margin: 0;
+  }
+
+  .tree-summary {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.35rem;
+    min-height: 32px;
+    padding: 0.38rem 0.45rem;
+    border-radius: 5px;
+    color: var(--text-muted);
+    font-size: 0.84rem;
+    font-weight: 560;
+    line-height: 1.35;
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+    transition: color 0.15s ease, background-color 0.15s ease;
+  }
+
+  .tree-summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .tree-summary:hover {
+    color: var(--text);
+    background: var(--bg-subtle);
+  }
+
+  .chevron-icon {
+    width: 14px;
+    height: 14px;
+    margin-top: 1px;
+    color: var(--text-subtle);
+    flex-shrink: 0;
+    transition: transform 0.18s ease;
+  }
+
+  .tree-folder[open] > .tree-summary .chevron-icon {
+    transform: rotate(90deg);
+  }
+
+  .folder-title {
+    overflow-wrap: anywhere;
+  }
+
+  .tree-folder-body {
+    margin-inline-start: 0.88rem;
+    padding-inline-start: 0.45rem;
+    border-inline-start: 1px solid var(--border);
+  }
+
+  .tree-link {
+    display: block;
+    padding: 0.4rem 0.55rem;
+    border-radius: 5px;
+    color: var(--text-muted);
+    font-size: 0.83rem;
+    line-height: 1.35;
+    text-decoration: none;
+    transition: color 0.15s ease, background-color 0.15s ease;
+  }
+
+  .tree-link:hover {
+    color: var(--text);
+    background: var(--bg-subtle);
+  }
+
+  .tree-link.active {
+    color: var(--text);
+    background: var(--accent-subtle);
+    box-shadow: inset 2px 0 0 var(--accent);
+    font-weight: 580;
+  }
+
+  .leaf-title {
+    display: -webkit-box;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+</style>

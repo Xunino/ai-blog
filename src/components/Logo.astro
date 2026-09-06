@@ -1,0 +1,78 @@
+---
+interface Props {
+  size?: number;
+  class?: string;
+}
+
+const { size = 28, class: className = '' } = Astro.props;
+---
+
+<svg
+  class:list={['latent-logo', className]}
+  viewBox="0 0 32 32"
+  width={size}
+  height={size}
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+  aria-hidden="true"
+>
+  <defs>
+    <linearGradient id="tls-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0e1726"/>
+      <stop offset="100%" stop-color="#030712"/>
+    </linearGradient>
+    <linearGradient id="tls-top" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0284c7" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#38bdf8" stop-opacity="0.95"/>
+    </linearGradient>
+    <linearGradient id="tls-left" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0369a1" stop-opacity="0.85"/>
+      <stop offset="100%" stop-color="#082f49" stop-opacity="0.95"/>
+    </linearGradient>
+    <linearGradient id="tls-right" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0ea5e9" stop-opacity="0.75"/>
+      <stop offset="100%" stop-color="#0369a1" stop-opacity="0.9"/>
+    </linearGradient>
+  </defs>
+  <rect width="32" height="32" rx="7.5" fill="url(#tls-bg)" stroke="#1e293b" stroke-width="1"/>
+  <!-- Isometric 3D Latent Manifold -->
+  <polygon points="16,6 25,11 16,16 7,11" fill="url(#tls-top)"/>
+  <polygon points="7,11 16,16 16,26 7,21" fill="url(#tls-left)"/>
+  <polygon points="16,16 25,11 25,21 16,26" fill="url(#tls-right)"/>
+  <!-- Coordinate Edges / Manifold Axes -->
+  <line x1="7" y1="11" x2="16" y2="16" stroke="#bae6fd" stroke-width="1.1" stroke-linecap="round"/>
+  <line x1="25" y1="11" x2="16" y2="16" stroke="#bae6fd" stroke-width="1.1" stroke-linecap="round"/>
+  <line x1="16" y1="26" x2="16" y2="16" stroke="#bae6fd" stroke-width="1.1" stroke-linecap="round"/>
+  <!-- Outer Wireframe Contour -->
+  <polygon points="16,6 25,11 25,21 16,26 7,21 7,11" fill="none" stroke="#38bdf8" stroke-width="1.3" stroke-linejoin="round"/>
+  <!-- Coordinate Vertex Nodes -->
+  <circle cx="16" cy="6" r="1.3" fill="#e0f2fe"/>
+  <circle cx="25" cy="11" r="1.3" fill="#e0f2fe"/>
+  <circle cx="25" cy="21" r="1.3" fill="#e0f2fe"/>
+  <circle cx="16" cy="26" r="1.3" fill="#e0f2fe"/>
+  <circle cx="7" cy="21" r="1.3" fill="#e0f2fe"/>
+  <circle cx="7" cy="11" r="1.3" fill="#e0f2fe"/>
+  <!-- Center Singularity (Latent Vector z) -->
+  <circle cx="16" cy="16" r="3.2" fill="#38bdf8" opacity="0.5"/>
+  <circle cx="16" cy="16" r="1.7" fill="#ffffff"/>
+</svg>
+
+<style>
+  .latent-logo {
+    display: block;
+    flex-shrink: 0;
+    border-radius: var(--radius-sm, 6px);
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  :global(.site-title:hover) .latent-logo {
+    transform: scale(1.06);
+  }
+
+  @media (max-width: 640px) {
+    .latent-logo {
+      width: 24px;
+      height: 24px;
+    }
+  }
+</style>

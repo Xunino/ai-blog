@@ -1,0 +1,64 @@
+---
+import { SITE, type Locale } from '../../site.config';
+import { useTranslations } from '../i18n/ui';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+const year = new Date().getFullYear();
+---
+
+<footer class="compact-footer" aria-label="Footer">
+  <div class="compact-copy">
+    <span>&copy; {year} {SITE.author.name}</span>
+    <span aria-hidden="true">·</span>
+    <span>{t('footer.builtWith')}</span>
+  </div>
+
+  <nav class="compact-links" aria-label="Footer links">
+    <a href={`/rss-${locale}.xml`}>{t('rss.label')}</a>
+    <a href="#main">{t('toc.backToTop')} <span aria-hidden="true">&uarr;</span></a>
+  </nav>
+</footer>
+
+<style>
+  .compact-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 2.25rem;
+    padding-block: 0.9rem 1.15rem;
+    border-top: 1px solid var(--border);
+    color: var(--text-subtle);
+    font-size: 0.76rem;
+    line-height: 1.4;
+  }
+
+  .compact-copy,
+  .compact-links {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+  }
+
+  .compact-links a {
+    color: var(--text-muted);
+    text-decoration: none;
+  }
+
+  .compact-links a:hover {
+    color: var(--text);
+  }
+
+  @media (max-width: 560px) {
+    .compact-footer {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 0.45rem;
+    }
+  }
+</style>

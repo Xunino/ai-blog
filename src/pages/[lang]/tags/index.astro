@@ -1,0 +1,65 @@
+---
+import Base from '../../../layouts/Base.astro';
+import SidebarTree from '../../../components/SidebarTree.astro';
+import CompactFooter from '../../../components/CompactFooter.astro';
+import { LOCALES, type Locale } from '../../../../site.config';
+import { useTranslations, otherLocale } from '../../../i18n/ui';
+import { getPosts, getTags, tagSlug } from '../../../lib/posts';
+import { buildTree } from '../../../lib/tree';
+
+export function getStaticPaths() {
+  return LOCALES.map((lang) => ({ params: { lang } }));
+}
+
+const locale = Astro.params.lang as Locale;
+const t = useTranslations(locale);
+
+const allPosts = await getPosts(locale);
+const tree = buildTree(allPosts, locale);
+const tags = await getTags(locale);
+---
+
+<Base
+  locale={locale}
+  title={t('tags.title')}
+  altPath={`/${otherLocale(locale)}/tags/`}
+  container="none"
+  showFooter={false}
+>
+  <div class="app-shell home-shell">
+    <div class="shell-sidebar-col">
+      <SidebarTree tree={tree} currentUrl={Astro.url.pathname} locale={locale} />
+    </div>
+
+    <div class="shell-content-col">
+      <div class="shell-content-inner">
+        <header style="margin-bottom: var(--space-xl);">
+          <h1 style="margin-bottom: var(--space-xs); font-size: 2.25rem;">{t('tags.title')}</h1>
+          <p style="color: var(--text-muted);">{tags.length} {t('tags.postCount')}</p>
+        </header>
+
+        {
+          tags.length === 0 ? (
+            <p>{t('tags.empty')}</p>
+          ) : (
+            <ul class="tag-list" style="gap: var(--space-sm);">
+              {tags.map(({ tag, count }) => (
+                <li>
+                  <a
+                    class="tag"
+                    style="font-size: 1rem; padding: 0.4rem 0.9rem;"
+                    href={`/${locale}/tags/${tagSlug(tag)}/`}
+                  >
+                    #{tag} <span class="tag-count">({count})</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          )
+        }
+
+        <CompactFooter locale={locale} />
+      </div>
+    </div>
+  </div>
+</Base>

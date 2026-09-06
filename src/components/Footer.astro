@@ -1,0 +1,30 @@
+---
+import { SITE, type Locale } from '../../site.config';
+import { useTranslations } from '../i18n/ui';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container-symmetric footer-inner">
+    <div class="footer-brand">
+      <span>&copy; {year} {SITE.author.name}</span>
+      <span class="footer-dot" aria-hidden="true">·</span>
+      <span>{t('footer.builtWith')}</span>
+    </div>
+
+    <nav class="footer-nav" aria-label="Footer navigation">
+      <a href={`/${locale}/`}>{t('nav.home')}</a>
+      <a href={`/${locale}/tags/`}>{t('nav.tags')}</a>
+      <a href={`/rss-${locale}.xml`} title={t('rss.label')}>
+        {t('rss.label')}
+      </a>
+    </nav>
+  </div>
+</footer>

@@ -1,0 +1,208 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 250" width="100%" height="100%">
+    <defs>
+    <style>
+      :root {
+        --bg-card: #ffffff;
+        --bg-subtle: #f8f9fa;
+        --bg-elevated: #f1f3f5;
+        --border: #e2e6ea;
+        --border-hover: #c4cacf;
+        --text: #1a1f26;
+        --text-muted: #57606a;
+        --text-subtle: #6e7781;
+        --accent: #0b79a8;
+        --accent-subtle: rgba(11, 121, 168, 0.08);
+        --green: #1a7f37;
+        --green-bg: rgba(26, 127, 55, 0.08);
+        --green-subtle: rgba(26, 127, 55, 0.08);
+        --bad: #cf222e;
+        --bad-bg: rgba(207, 34, 46, 0.08);
+        --red: #cf222e;
+        --red-bg: rgba(207, 34, 46, 0.08);
+        --amber: #9a6700;
+        --amber-bg: rgba(154, 103, 0, 0.08);
+        --purple: #8250df;
+        --purple-bg: rgba(130, 80, 223, 0.08);
+        --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg-card: #0d1117;
+          --bg-subtle: #161b22;
+          --bg-elevated: #1c2128;
+          --border: #30363d;
+          --border-hover: #6e7681;
+          --text: #f0f6fc;
+          --text-muted: #8b949e;
+          --text-subtle: #6e7681;
+          --accent: #61c7ef;
+          --accent-subtle: rgba(97, 199, 239, 0.12);
+          --green: #3fb950;
+          --green-bg: rgba(63, 185, 80, 0.12);
+          --green-subtle: rgba(63, 185, 80, 0.12);
+          --bad: #f85149;
+          --bad-bg: rgba(248, 81, 73, 0.12);
+          --red: #f85149;
+          --red-bg: rgba(248, 81, 73, 0.12);
+          --amber: #d29922;
+          --amber-bg: rgba(210, 153, 34, 0.12);
+          --purple: #bc8cff;
+          --purple-bg: rgba(188, 140, 255, 0.12);
+        }
+      }
+      text { font-family: var(--font-sans); }
+      .mono { font-family: var(--font-mono); }
+      .bg-plate { fill: var(--bg-card); stroke: var(--border); stroke-width: 1; }
+      
+      .box { fill: var(--bg-card); stroke: var(--border-hover); stroke-width: 1.25; }
+      .box-subtle { fill: var(--bg-subtle); stroke: var(--border); stroke-width: 1.25; }
+      .box-acc { fill: var(--accent-subtle); stroke: var(--accent); stroke-width: 1.4; }
+      .box-bad { fill: var(--bad-bg); stroke: var(--bad); stroke-width: 1.25; stroke-dasharray: 4 3; }
+      .box-green { fill: var(--green-bg); stroke: var(--green); stroke-width: 1.25; }
+      .box-amber { fill: var(--amber-bg); stroke: var(--amber); stroke-width: 1.25; }
+      .box-purple { fill: var(--purple-bg); stroke: var(--purple); stroke-width: 1.25; }
+      .box-hollow { fill: none; stroke: var(--accent); stroke-width: 1.4; stroke-dasharray: 6 4; }
+      .box-layer { fill: var(--bg-card); stroke: var(--border); stroke-width: 1.2; }
+      .box-surface { fill: var(--bg-card); stroke: var(--border-hover); stroke-width: 1.25; }
+      .box-cassette { fill: var(--amber-bg); stroke: var(--amber); stroke-width: 1.4; }
+      .box-replay { fill: var(--green-bg); stroke: var(--green); stroke-width: 1.4; }
+      .stage-box { fill: var(--bg-subtle); stroke: var(--border); stroke-width: 1.2; }
+      
+      .card-main { fill: var(--bg-card); stroke: var(--accent); stroke-width: 1.5; }
+      .card-subtle { fill: var(--bg-card); stroke: var(--border); stroke-width: 1.2; }
+      .card-elevated { fill: var(--bg-subtle); stroke: var(--border); stroke-width: 1.2; }
+      .card-footer { fill: var(--bg-subtle); stroke: var(--border); stroke-width: 1.2; }
+      .card-left { fill: var(--bg-card); stroke: var(--border); stroke-width: 1.25; }
+      .card-right { fill: var(--bg-card); stroke: var(--border); stroke-width: 1.25; }
+      .card-green { fill: var(--green-bg); stroke: var(--green); stroke-width: 1.4; }
+      .card-amber { fill: var(--amber-bg); stroke: var(--amber); stroke-width: 1.4; }
+      .card-red { fill: var(--red-bg); stroke: var(--red); stroke-width: 1.4; }
+      .card-cached { fill: var(--green-bg); stroke: var(--green); stroke-width: 1.4; }
+      .card-dynamic { fill: var(--amber-bg); stroke: var(--amber); stroke-width: 1.4; }
+      .card-durable { fill: var(--green-bg); stroke: var(--green); stroke-width: 1.4; }
+      .card-eval { fill: var(--green-bg); stroke: var(--green); stroke-width: 1.4; }
+      .card-test { fill: var(--purple-bg); stroke: var(--purple); stroke-width: 1.3; }
+      .card-warning { fill: var(--bg-subtle); stroke: var(--amber); stroke-width: 1.3; }
+      .card-working { fill: var(--red-bg); stroke: var(--red); stroke-width: 1.3; }
+      .card-fragile { fill: var(--red-bg); stroke: var(--red); stroke-width: 1.3; }
+      .card-seam { fill: var(--bg-card); stroke: var(--accent); stroke-width: 1.5; }
+      .card-shadow { fill: var(--bg-card); stroke: var(--accent); stroke-width: 1.5; }
+      .card-consumer { fill: var(--accent-subtle); stroke: var(--accent); stroke-width: 1.4; }
+      .card-provider { fill: var(--bg-card); stroke: var(--border-hover); stroke-width: 1.25; }
+      .card-teardown { fill: var(--bg-subtle); stroke: var(--border); stroke-width: 1.2; }
+      .card-terminal { fill: var(--bg-card); stroke: var(--border-hover); stroke-width: 1.4; }
+      .card-primitive { fill: var(--bg-card); stroke: var(--accent); stroke-width: 1.5; }
+      .card-1 { fill: var(--amber-bg); stroke: var(--amber); stroke-width: 1.3; }
+      .card-2 { fill: var(--red-bg); stroke: var(--red); stroke-width: 1.3; }
+      .card-3 { fill: var(--purple-bg); stroke: var(--purple); stroke-width: 1.3; }
+      .card-loop { fill: var(--bg-card); stroke: var(--accent); stroke-width: 1.5; }
+      
+      .pill-call { fill: var(--accent-subtle); stroke: var(--accent); stroke-width: 1.4; }
+      .pill-safe { fill: var(--green-bg); stroke: var(--green); stroke-width: 1.4; }
+      .pill-warn { fill: var(--amber-bg); stroke: var(--amber); stroke-width: 1.4; }
+      .pill-danger { fill: var(--red-bg); stroke: var(--red); stroke-width: 1.4; }
+      .pill-fold { fill: var(--accent-subtle); stroke: var(--accent); stroke-width: 1.4; }
+      
+      .title { font-size: 13px; font-weight: 700; fill: var(--text); }
+      .title-lg { font-size: 13.5px; font-weight: 700; fill: var(--text); }
+      .title-md { font-size: 12px; font-weight: 700; fill: var(--text); }
+      .title-card { font-size: 13px; font-weight: 700; fill: var(--text); }
+      .title-green { font-size: 13px; font-weight: 700; fill: var(--green); }
+      .title-purple { font-size: 13px; font-weight: 700; fill: var(--purple); }
+      .title-red { font-size: 12.5px; font-weight: 700; fill: var(--red); }
+      .text-main { font-size: 12px; font-weight: 600; fill: var(--text); }
+      .text-body { font-size: 11px; fill: var(--text-muted); }
+      .text-code { font-size: 11px; font-weight: 600; fill: var(--text); }
+      .text-sub { font-size: 11px; fill: var(--text-muted); }
+      .text-acc { font-size: 11.5px; font-weight: 600; fill: var(--accent); }
+      .text-bad { font-size: 11.5px; font-weight: 700; fill: var(--bad); }
+      .text-green { font-size: 11.5px; font-weight: 600; fill: var(--green); }
+      .text-rule { font-size: 11.5px; font-weight: 700; fill: var(--text); }
+      .header { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; fill: var(--text-subtle); }
+      .h { font-size: 10.5px; font-weight: 700; letter-spacing: 0.1em; fill: var(--text-subtle); }
+      .t { font-size: 12px; font-weight: 600; fill: var(--text); }
+      .s { font-size: 11.5px; fill: var(--text-muted); }
+      .la { font-size: 11px; font-weight: 700; fill: var(--accent); }
+      
+      .tag-text { font-size: 9.5px; font-weight: 700; letter-spacing: 0.06em; fill: var(--accent); }
+      .tag-accent { font-size: 9.5px; font-weight: 700; letter-spacing: 0.06em; fill: var(--accent); }
+      .tag-green { font-size: 9.5px; font-weight: 700; letter-spacing: 0.06em; fill: var(--green); }
+      .tag-amber { font-size: 9.5px; font-weight: 700; letter-spacing: 0.06em; fill: var(--amber); }
+      .tag-bad { font-size: 9.5px; font-weight: 700; letter-spacing: 0.06em; fill: var(--bad); }
+      .badge-text { font-size: 9.5px; font-weight: 700; letter-spacing: 0.08em; fill: var(--accent); }
+      .badge-pill { font-size: 10px; font-weight: 700; fill: var(--accent); }
+      .check-icon { font-size: 12px; font-weight: 800; fill: var(--green); }
+      
+      .line { stroke: var(--border-hover); stroke-width: 1.4; fill: none; }
+      .line-acc { stroke: var(--accent); stroke-width: 1.6; fill: none; }
+      .line-bad { stroke: var(--bad); stroke-width: 1.4; fill: none; stroke-dasharray: 4 3; }
+      .line-green { stroke: var(--green); stroke-width: 1.5; fill: none; }
+      .line-dash { stroke: var(--border-hover); stroke-width: 1.2; fill: none; stroke-dasharray: 4 3; }
+      .line-main { stroke: var(--accent); stroke-width: 1.6; fill: none; }
+      .line-branch { stroke: var(--border-hover); stroke-width: 1.3; fill: none; }
+      .line-break { stroke: var(--green); stroke-width: 1.8; stroke-dasharray: 4 4; fill: none; }
+      .line-cut { stroke: var(--red); stroke-width: 1.5; stroke-dasharray: 4 3; fill: none; }
+      .line-settle { stroke: var(--accent); stroke-width: 1.5; stroke-dasharray: 4 3; fill: none; }
+      .line-sub { stroke: var(--border-hover); stroke-width: 1.3; fill: none; }
+      .life { stroke: var(--border); stroke-width: 1.2; stroke-dasharray: 4 4; fill: none; }
+    </style>
+    <marker id="arr" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <polygon points="0 1, 9 5, 0 9" fill="var(--border-hover)"/>
+    </marker>
+    <marker id="arr-acc" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <polygon points="0 1, 9 5, 0 9" fill="var(--accent)"/>
+    </marker>
+    <marker id="arr-bad" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <polygon points="0 1, 9 5, 0 9" fill="var(--bad)"/>
+    </marker>
+    <marker id="arr-green" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <polygon points="0 1, 9 5, 0 9" fill="var(--green)"/>
+    </marker>
+    <marker id="arr-sub" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <polygon points="0 1, 9 5, 0 9" fill="var(--border-hover)"/>
+    </marker>
+  </defs>
+
+  <rect width="100%" height="100%" rx="8" class="bg-plate"/>
+
+<!-- Left: Step and Background Job Container -->
+  <rect x="20" y="24" width="400" height="206" rx="8" class="box-subtle"/>
+  <text x="36" y="46" class="header">JOB CREATION &amp; INDEPENDENT LIFECYCLE</text>
+
+  <!-- Step Box -->
+  <rect x="36" y="60" width="368" height="52" rx="6" class="box"/>
+  <text x="50" y="82" class="title mono">runStep() — Non-blocking</text>
+  <text x="50" y="98" class="text-sub">Returns job_id in milliseconds → turn can close</text>
+
+  <path d="M 220 112 V 134" class="line-acc" marker-end="url(#arr-acc)"/>
+
+  <!-- Background Job Box -->
+  <rect x="36" y="142" width="368" height="74" rx="6" class="box-acc"/>
+  <text x="50" y="164" class="title mono">Job Process — Runs in Background (e.g. 8 mins)</text>
+  <text x="50" y="184" class="text-sub">• Runtime owns durable identity, logs and notifications</text>
+  <text x="50" y="200" class="text-sub">• Subprocess isolated; output polled via job_output</text>
+
+  <!-- Right: Release Contract Checklist -->
+  <rect x="440" y="24" width="440" height="206" rx="8" class="box"/>
+  <rect x="456" y="36" width="180" height="18" rx="4" fill="var(--accent-subtle)"/>
+  <text x="546" y="49" text-anchor="middle" class="tag-accent mono">THE RELEASE INVARIANT</text>
+  <text x="456" y="74" class="title">done Resolves When Released, NOT Just Exited</text>
+
+  <g transform="translate(456, 92)">
+    <text x="0" y="12" class="text-main mono">1. process exit</text>
+    <text x="170" y="12" class="text-sub">← code finished executing</text>
+
+    <text x="0" y="34" class="text-main mono">2. drain streams</text>
+    <text x="170" y="34" class="text-sub">← flush remaining stdout/stderr</text>
+
+    <text x="0" y="56" class="text-main mono">3. kill process group</text>
+    <text x="170" y="56" class="text-sub">← tear down orphaned grandchildren</text>
+
+    <text x="0" y="78" class="text-main mono">4. clean scratch files</text>
+    <text x="170" y="78" class="text-sub">← release disk locks &amp; mounts</text>
+
+    <rect x="0" y="94" width="408" height="28" rx="4" fill="var(--green-bg)"/>
+    <text x="12" y="112" class="text-main" fill="var(--green)">✓ ONLY THEN does job settlement resolve and notify</text>
+  </g>
+</svg>

@@ -1,0 +1,146 @@
+---
+import type { Locale } from '../../site.config';
+import { SITE } from '../../site.config';
+import { useTranslations, formatDate } from '../i18n/ui';
+import { tagSlug, type Post } from '../lib/posts';
+
+interface Props {
+  post: Post;
+  locale: Locale;
+  minutes: number;
+}
+
+const { post, locale, minutes } = Astro.props;
+const t = useTranslations(locale);
+const initials = SITE.author.name
+  .split(' ')
+  .map((p) => p[0])
+  .slice(0, 2)
+  .join('')
+  .toUpperCase();
+---
+
+<aside class="rail-left" aria-label="Article navigation and details" data-pagefind-ignore>
+  {/* Nút quay lại */}
+  <div>
+    <a class="btn-subtle back-nav-btn" href={`/${locale}/`}>
+      <span aria-hidden="true">&larr;</span>
+      <span>{t('post.backToList')}</span>
+    </a>
+  </div>
+
+  {/* Khối thông tin tác giả & bài viết */}
+  <div class="rail-card">
+    <div class="rail-author-row">
+      <div class="rail-avatar" aria-hidden="true">{initials}</div>
+      <div>
+        <p class="rail-author-name">{SITE.author.name}</p>
+        <p class="rail-author-role">Author</p>
+      </div>
+    </div>
+
+    <div class="rail-divider"></div>
+
+    <div class="rail-meta-section">
+      <p class="rail-meta-label">{t('post.publishedOn')}</p>
+      <time class="rail-meta-val" datetime={post.data.pubDate.toISOString()}>
+        {formatDate(post.data.pubDate, locale)}
+      </time>
+    </div>
+
+    <div class="rail-meta-section">
+      <p class="rail-meta-label">Thời lượng</p>
+      <p class="rail-meta-val">{minutes} {t('post.readingTime')}</p>
+    </div>
+
+    {
+      post.data.tags.length > 0 && (
+        <div class="rail-meta-section">
+          <p class="rail-meta-label">{t('post.tags')}</p>
+          <ul class="tag-list" style="margin-top: 0.35rem;">
+            {post.data.tags.map((tag) => (
+              <li>
+                <a class="tag" style="font-size: 0.78rem; padding: 0.15rem 0.5rem;" href={`/${locale}/tags/${tagSlug(tag)}/`}>
+                  #{tag}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )
+    }
+  </div>
+</aside>
+
+<style>
+  .back-nav-btn {
+    width: 100%;
+    justify-content: flex-start;
+    padding: 0.4rem 0.75rem;
+    font-size: 0.86rem;
+    font-weight: 600;
+  }
+
+  .rail-author-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+  }
+
+  .rail-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #ffffff;
+    font-weight: 750;
+    font-size: 0.78rem;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+  }
+
+  .rail-author-name {
+    font-weight: 650;
+    font-size: 0.92rem;
+    color: var(--text);
+    margin: 0;
+    line-height: 1.3;
+  }
+
+  .rail-author-role {
+    font-size: 0.76rem;
+    color: var(--text-muted);
+    margin: 0;
+  }
+
+  .rail-divider {
+    height: 1px;
+    background: var(--border);
+    margin-block: var(--space-sm);
+  }
+
+  .rail-meta-section {
+    margin-bottom: var(--space-xs);
+  }
+
+  .rail-meta-section:last-child {
+    margin-bottom: 0;
+  }
+
+  .rail-meta-label {
+    font-size: 0.74rem;
+    font-weight: 650;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-subtle);
+    margin: 0 0 2px 0;
+  }
+
+  .rail-meta-val {
+    font-size: 0.86rem;
+    color: var(--text-muted);
+    margin: 0;
+    font-variant-numeric: tabular-nums;
+  }
+</style>

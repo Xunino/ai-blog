@@ -1,0 +1,164 @@
+---
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { ClientRouter } from 'astro:transitions';
+import { SITE, type Locale } from '../../site.config';
+import { useTranslations } from '../i18n/ui';
+
+interface Props {
+  locale: Locale;
+  title?: string;
+  description?: string;
+  /** Đường dẫn tương ứng ở ngôn ngữ kia; undefined = chưa có bản dịch */
+  altPath?: string;
+  /** 'website' cho trang danh sách, 'article' cho bài viết */
+  ogType?: 'website' | 'article';
+  publishedTime?: Date;
+  modifiedTime?: Date;
+  /** JSON-LD dựng sẵn từ trang bài viết */
+  jsonLd?: Record<string, unknown>;
+  noindex?: boolean;
+  /** Chiều rộng vùng chứa nội dung chính */
+  container?: 'content' | 'prose' | 'wide' | 'symmetric' | 'shell' | 'none';
+  showFooter?: boolean;
+}
+
+const {
+  locale,
+  title,
+  description,
+  altPath,
+  ogType = 'website',
+  publishedTime,
+  modifiedTime,
+  jsonLd,
+  noindex = false,
+  container = 'content',
+  showFooter = container !== 'shell' && container !== 'none',
+} = Astro.props;
+
+const t = useTranslations(locale);
+
+const siteTitle = SITE.title[locale];
+const pageTitle = title ? `${title} — ${siteTitle}` : siteTitle;
+const pageDescription = description ?? SITE.description[locale];
+
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const ogImage = new URL('/og-default.svg', Astro.site).href;
+const other: Locale = locale === 'vi' ? 'en' : 'vi';
+
+const containerClass = container === 'none' ? '' : `container-${container}`;
+---
+
+<!doctype html>
+<html lang={locale}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>{pageTitle}</title>
+    <meta name="description" content={pageDescription} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+
+    <!-- Ngôn ngữ thay thế -->
+    {altPath && <link rel="alternate" hreflang={other} href={new URL(altPath, Astro.site).href} />}
+    <link rel="alternate" hreflang={locale} href={canonical} />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content={ogType} />
+    <meta property="og:title" content={title ?? siteTitle} />
+    <meta property="og:description" content={pageDescription} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:site_name" content={siteTitle} />
+    <meta property="og:locale" content={locale === 'vi' ? 'vi_VN' : 'en_US'} />
+    <meta property="og:image" content={ogImage} />
+    {publishedTime && (
+      <meta property="article:published_time" content={publishedTime.toISOString()} />
+    )}
+    {modifiedTime && <meta property="article:modified_time" content={modifiedTime.toISOString()} />}
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title ?? siteTitle} />
+    <meta name="twitter:description" content={pageDescription} />
+    <meta name="twitter:image" content={ogImage} />
+    {SITE.author.twitter && <meta name="twitter:creator" content={SITE.author.twitter} />}
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title={`${siteTitle} — ${locale.toUpperCase()}`}
+      href={new URL(`/rss-${locale}.xml`, Astro.site).href}
+    />
+
+    {jsonLd && <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
+
+    <ClientRouter />
+
+    {/*
+      Đặt theme TRƯỚC khi vẽ khung hình đầu tiên -> không nháy trắng FOUC.
+      Script đồng bộ, có ý để inline và chạy ngay lập tức.
+    */}
+    <script is:inline>
+      function initTheme() {
+        try {
+          var stored = localStorage.getItem('theme');
+          var theme =
+            stored === 'light' || stored === 'dark'
+              ? stored
+              : window.matchMedia('(prefers-color-scheme: dark)').matches
+                ? 'dark'
+                : 'light';
+          document.documentElement.dataset.theme = theme;
+        } catch (e) {
+          document.documentElement.dataset.theme = 'light';
+        }
+      }
+      initTheme();
+      document.addEventListener('astro:after-swap', initTheme);
+
+      function inlineDiagrams() {
+        document.querySelectorAll('figure.dg img[src$=".svg"]').forEach(function(img) {
+          fetch(img.src)
+            .then(function(res) { return res.ok ? res.text() : ''; })
+            .then(function(svgText) {
+              if (!svgText) return;
+              var parser = new DOMParser();
+              var doc = parser.parseFromString(svgText, 'image/svg+xml');
+              var svg = doc.querySelector('svg');
+              if (svg) {
+                svg.setAttribute('role', 'img');
+                if (img.alt) svg.setAttribute('aria-label', img.alt);
+                img.replaceWith(svg);
+              }
+            })
+            .catch(function() {});
+        });
+      }
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', inlineDiagrams);
+      } else {
+        inlineDiagrams();
+      }
+      document.addEventListener('astro:after-swap', inlineDiagrams);
+    </script>
+  </head>
+
+  <body>
+    <a class="skip-link" href="#main">{t('nav.skipToContent')}</a>
+    <Header locale={locale} altPath={altPath} />
+    <main id="main">
+      {containerClass ? (
+        <div class={containerClass}>
+          <slot />
+        </div>
+      ) : (
+        <slot />
+      )}
+    </main>
+    {showFooter && <Footer locale={locale} />}
+  </body>
+</html>

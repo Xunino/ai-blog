@@ -1,0 +1,199 @@
+---
+import { render } from 'astro:content';
+import { Image } from 'astro:assets';
+import Base from '../../../layouts/Base.astro';
+import Comments from '../../../components/Comments.astro';
+import TableOfContents from '../../../components/TableOfContents.astro';
+import SidebarTree from '../../../components/SidebarTree.astro';
+import CompactFooter from '../../../components/CompactFooter.astro';
+import { LOCALES, SITE, type Locale } from '../../../../site.config';
+import { useTranslations, formatDate, otherLocale } from '../../../i18n/ui';
+import {
+  getPosts,
+  postSlug,
+  postPath,
+  findTranslation,
+  readingTime,
+  tagSlug,
+  type Post,
+} from '../../../lib/posts';
+import { buildTree } from '../../../lib/tree';
+
+export async function getStaticPaths() {
+  const paths = [];
+
+  for (const lang of LOCALES) {
+    const posts = await getPosts(lang);
+    for (const post of posts) {
+      paths.push({
+        params: { lang, slug: postSlug(post) },
+        props: { post },
+      });
+    }
+  }
+
+  return paths;
+}
+
+interface Props {
+  post: Post;
+}
+
+const { post } = Astro.props;
+const locale = Astro.params.lang as Locale;
+const t = useTranslations(locale);
+
+const allPosts = await getPosts(locale);
+const tree = buildTree(allPosts, locale);
+
+const { Content, headings } = await render(post);
+const hasToc = headings.filter((heading) => heading.depth === 2 || heading.depth === 3).length >= 2;
+
+// Bản dịch tương ứng — không có thì nút đổi ngôn ngữ về trang chủ
+const translation = await findTranslation(post, otherLocale(locale));
+const altPath = translation ? postPath(translation) : undefined;
+
+const minutes = readingTime(post.body);
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: post.data.title,
+  description: post.data.description,
+  datePublished: post.data.pubDate.toISOString(),
+  ...(post.data.updatedDate && { dateModified: post.data.updatedDate.toISOString() }),
+  author: { '@type': 'Person', name: SITE.author.name },
+  inLanguage: locale,
+  mainEntityOfPage: new URL(Astro.url.pathname, Astro.site).href,
+};
+
+// Xây dựng breadcrumbs phân cấp từ đường dẫn thư mục
+const slugParts = postSlug(post).split('/');
+const breadcrumbs = [
+  { label: t('nav.home'), url: `/${locale}/` },
+  ...slugParts.slice(0, -1).map((part) => ({
+    label: part
+      .split('-')
+      .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+      .join(' '),
+    url: undefined,
+  })),
+  { label: post.data.sidebarTitle || post.data.title, url: undefined },
+];
+---
+
+<Base
+  locale={locale}
+  title={post.data.title}
+  description={post.data.description}
+  altPath={altPath}
+  ogType="article"
+  publishedTime={post.data.pubDate}
+  modifiedTime={post.data.updatedDate}
+  jsonLd={jsonLd}
+  container="none"
+  showFooter={false}
+>
+  <div class:list={['app-shell', { 'no-toc': !hasToc }]}>
+    {/* Cột trái (280px): Cây danh mục toàn trang (Tree Navigation) */}
+    <div class="shell-sidebar-col">
+      <SidebarTree tree={tree} currentUrl={Astro.url.pathname} locale={locale} />
+    </div>
+
+    {/* Cột giữa: Vùng đọc bài viết chính (tối đa 860px, thoáng mắt, tỷ lệ vàng) */}
+    <div class="shell-content-col">
+      <div class="shell-content-inner">
+        <nav class="breadcrumbs" aria-label="Breadcrumbs">
+          {
+            breadcrumbs.map((crumb, idx) => (
+              <>
+                {idx > 0 && <span class="breadcrumb-sep" aria-hidden="true">/</span>}
+                {crumb.url ? (
+                  <a href={crumb.url}>{crumb.label}</a>
+                ) : (
+                  <span>{crumb.label}</span>
+                )}
+              </>
+            ))
+          }
+        </nav>
+
+        <article data-pagefind-body data-pagefind-filter={`lang:${locale}`}>
+          <header class="post-header">
+            <h1>{post.data.title}</h1>
+
+            <div class="post-header-meta">
+              <time datetime={post.data.pubDate.toISOString()}>
+                {t('post.publishedOn')} {formatDate(post.data.pubDate, locale)}
+              </time>
+              <span class="meta-dot" aria-hidden="true">·</span>
+              <span>{minutes} {t('post.readingTime')}</span>
+              {post.data.draft && <span class="badge">{t('post.draft')}</span>}
+            </div>
+
+            {
+              post.data.updatedDate && (
+                <div class="post-header-meta" style="margin-top:-0.5rem">
+                  <span>
+                    {t('post.updatedOn')} {formatDate(post.data.updatedDate, locale)}
+                  </span>
+                </div>
+              )
+            }
+
+            {
+              post.data.tags.length > 0 && (
+                <ul class="tag-list" style="margin-top:0.75rem">
+                  {post.data.tags.map((tag) => (
+                    <li>
+                      <a class="tag" href={`/${locale}/tags/${tagSlug(tag)}/`}>
+                        #{tag}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              )
+            }
+          </header>
+
+          {
+            post.data.cover && (
+              <Image
+                class="post-cover"
+                src={post.data.cover}
+                alt={post.data.coverAlt ?? post.data.title}
+                widths={[480, 800, 1200]}
+                sizes="(max-width: 860px) 100vw, 860px"
+                loading="eager"
+                fetchpriority="high"
+              />
+            )
+          }
+
+          {/* Mục lục thu gọn hiển thị trên màn hình nhỏ (< 1280px) */}
+          <TableOfContents headings={headings} locale={locale} variant="inline" />
+
+          <div class="prose">
+            <Content />
+          </div>
+        </article>
+
+        <nav class="post-footer-nav" aria-label={t('post.backToList')}>
+          <a class="back-link" href={`/${locale}/`}>
+            <span aria-hidden="true">&larr;</span> {t('post.backToList')}
+          </a>
+        </nav>
+
+        <Comments locale={locale} />
+
+        {/* Compact Footer thu nhỏ ở cuối bài viết */}
+        <CompactFooter locale={locale} />
+      </div>
+    </div>
+
+    {/* Cột phải (240px): Mục lục bài viết trôi theo (Sticky TOC) */}
+    <div class="shell-toc-col">
+      <TableOfContents headings={headings} locale={locale} variant="sticky" />
+    </div>
+  </div>
+</Base>

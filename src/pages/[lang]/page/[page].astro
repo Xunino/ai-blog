@@ -1,0 +1,87 @@
+---
+import Base from '../../../layouts/Base.astro';
+import PostCard from '../../../components/PostCard.astro';
+import Pagination from '../../../components/Pagination.astro';
+import SidebarTree from '../../../components/SidebarTree.astro';
+import CompactFooter from '../../../components/CompactFooter.astro';
+import { LOCALES, POSTS_PER_PAGE, type Locale } from '../../../../site.config';
+import { useTranslations, otherLocale } from '../../../i18n/ui';
+import { getPosts, type Post } from '../../../lib/posts';
+import { buildTree } from '../../../lib/tree';
+
+export async function getStaticPaths() {
+  const paths = [];
+
+  for (const lang of LOCALES) {
+    const posts = await getPosts(lang);
+    const lastPage = Math.max(1, Math.ceil(posts.length / POSTS_PER_PAGE));
+
+    // Trang 1 đã có ở /[lang]/ nên chỉ sinh từ trang 2 trở đi
+    for (let page = 2; page <= lastPage; page++) {
+      paths.push({
+        params: { lang, page: String(page) },
+        props: {
+          posts: posts.slice((page - 1) * POSTS_PER_PAGE, page * POSTS_PER_PAGE),
+          currentPage: page,
+          lastPage,
+        },
+      });
+    }
+  }
+
+  return paths;
+}
+
+interface Props {
+  posts: Post[];
+  currentPage: number;
+  lastPage: number;
+}
+
+const locale = Astro.params.lang as Locale;
+const { posts, currentPage, lastPage } = Astro.props as Props;
+const t = useTranslations(locale);
+
+const allPosts = await getPosts(locale);
+const tree = buildTree(allPosts, locale);
+
+const prevUrl = currentPage === 2 ? `/${locale}/` : `/${locale}/page/${currentPage - 1}/`;
+const nextUrl = currentPage < lastPage ? `/${locale}/page/${currentPage + 1}/` : undefined;
+---
+
+<Base
+  locale={locale}
+  title={`${t('pagination.page')} ${currentPage}`}
+  altPath={`/${otherLocale(locale)}/`}
+  container="none"
+  showFooter={false}
+  noindex
+>
+  <div class="app-shell home-shell">
+    <div class="shell-sidebar-col">
+      <SidebarTree tree={tree} currentUrl={Astro.url.pathname} locale={locale} />
+    </div>
+
+    <div class="shell-content-col">
+      <div class="shell-content-inner">
+        <h1 style="margin-bottom: var(--space-xl); font-size: 2rem;">
+          {t('pagination.page')} {currentPage}
+        </h1>
+
+        <ul class="post-list">
+          {posts.map((post) => <PostCard post={post} locale={locale} />)}
+        </ul>
+
+        <Pagination
+          locale={locale}
+          currentPage={currentPage}
+          lastPage={lastPage}
+          prevUrl={prevUrl}
+          nextUrl={nextUrl}
+        />
+
+        <CompactFooter locale={locale} />
+      </div>
+    </div>
+  </div>
+</Base>

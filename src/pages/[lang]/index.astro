@@ -1,0 +1,114 @@
+---
+import Base from '../../layouts/Base.astro';
+import PostCard from '../../components/PostCard.astro';
+import Pagination from '../../components/Pagination.astro';
+import SidebarTree from '../../components/SidebarTree.astro';
+import CompactFooter from '../../components/CompactFooter.astro';
+import { LOCALES, POSTS_PER_PAGE, SITE, type Locale } from '../../../site.config';
+import { useTranslations, otherLocale } from '../../i18n/ui';
+import { getPosts } from '../../lib/posts';
+import { buildTree } from '../../lib/tree';
+
+export function getStaticPaths() {
+  return LOCALES.map((lang) => ({ params: { lang } }));
+}
+
+const locale = Astro.params.lang as Locale;
+const t = useTranslations(locale);
+
+const allPosts = await getPosts(locale);
+const tree = buildTree(allPosts, locale);
+const posts = allPosts.slice(0, POSTS_PER_PAGE);
+const lastPage = Math.max(1, Math.ceil(allPosts.length / POSTS_PER_PAGE));
+
+// Danh mục cấp 1 để hiển thị lưới thẻ tổng quan
+const topFolders = tree.filter((item) => item.isFolder);
+---
+
+<Base
+  locale={locale}
+  description={SITE.description[locale]}
+  altPath={`/${otherLocale(locale)}/`}
+  container="none"
+  showFooter={false}
+>
+  <div class="app-shell home-shell">
+    {/* Cột trái (280px): Cây danh mục toàn trang (Tree Navigation) */}
+    <div class="shell-sidebar-col">
+      <SidebarTree tree={tree} currentUrl={Astro.url.pathname} locale={locale} />
+    </div>
+
+    {/* Vùng nội dung chính */}
+    <div class="shell-content-col">
+      <div class="shell-content-inner">
+        <header class="home-hero" style="border-bottom: none; margin-bottom: var(--space-md);">
+          <h1 class="hero-title">{SITE.title[locale]}</h1>
+          <p class="hero-desc">{SITE.description[locale]}</p>
+        </header>
+
+        {/* Lưới các chuyên mục chính dạng thẻ trực quan */}
+        {
+          topFolders.length > 0 && (
+            <div class="category-cards-grid">
+              {topFolders.map((folder) => {
+                // Tìm bài viết đầu tiên trong thư mục để làm link dẫn tới
+                const firstPost = folder.children.find((c) => !c.isFolder) || folder.children[0]?.children?.[0];
+                const href = firstPost?.url || '#';
+                const count = folder.children.length;
+                return (
+                  <a class="category-card" href={href}>
+                    <div>
+                      <div class="category-card-icon" aria-hidden="true">
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
+                        </svg>
+                      </div>
+                      <h2 class="category-card-title">{folder.title}</h2>
+                    </div>
+                    <span class="category-card-count">
+                      {count} {locale === 'vi' ? 'mục bài viết' : 'topics'} &rarr;
+                    </span>
+                  </a>
+                );
+              })}
+            </div>
+          )
+        }
+
+        {/* Danh sách bài viết mới cập nhật */}
+        <section aria-label={t('hero.latestPosts')} style="margin-top: var(--space-xl);">
+          <p class="section-label">{t('hero.latestPosts')}</p>
+
+          {
+            posts.length === 0 ? (
+              <p>{t('list.empty')}</p>
+            ) : (
+              <ul class="post-list">
+                {posts.map((post) => (
+                  <PostCard post={post} locale={locale} />
+                ))}
+              </ul>
+            )
+          }
+
+          <Pagination
+            locale={locale}
+            currentPage={1}
+            lastPage={lastPage}
+            nextUrl={lastPage > 1 ? `/${locale}/page/2/` : undefined}
+          />
+        </section>
+
+        {/* Compact footer thu nhỏ */}
+        <CompactFooter locale={locale} />
+      </div>
+    </div>
+  </div>
+</Base>

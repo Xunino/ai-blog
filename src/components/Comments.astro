@@ -1,0 +1,65 @@
+---
+import { GISCUS, type Locale } from '../../site.config';
+import { useTranslations } from '../i18n/ui';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+
+// Chua cau hinh giscus -> khong render gi ca, build van chay.
+const enabled = GISCUS.repo !== '' && GISCUS.repoId !== '' && GISCUS.categoryId !== '';
+---
+
+{
+  enabled && (
+    <section class="comments">
+      <h2>{t('comments.title')}</h2>
+      <div id="giscus-slot" />
+
+      {/* Chi tai giscus khi nguoi doc cuon toi — khong anh huong toc do vao trang */}
+      <script
+        is:inline
+        define:vars={{
+          repo: GISCUS.repo,
+          repoId: GISCUS.repoId,
+          category: GISCUS.category,
+          categoryId: GISCUS.categoryId,
+          lang: locale,
+        }}
+      >
+        (function () {
+          var slot = document.getElementById('giscus-slot');
+          if (!slot) return;
+
+          var observer = new IntersectionObserver(function (entries) {
+            if (!entries[0].isIntersecting) return;
+            observer.disconnect();
+
+            var s = document.createElement('script');
+            s.src = 'https://giscus.app/client.js';
+            s.async = true;
+            s.crossOrigin = 'anonymous';
+            s.setAttribute('data-repo', repo);
+            s.setAttribute('data-repo-id', repoId);
+            s.setAttribute('data-category', category);
+            s.setAttribute('data-category-id', categoryId);
+            s.setAttribute('data-mapping', 'pathname');
+            s.setAttribute('data-reactions-enabled', '1');
+            s.setAttribute('data-emit-metadata', '0');
+            s.setAttribute('data-input-position', 'top');
+            s.setAttribute('data-lang', lang);
+            s.setAttribute(
+              'data-theme',
+              document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light'
+            );
+            slot.appendChild(s);
+          }, { rootMargin: '200px' });
+
+          observer.observe(slot);
+        })();
+      </script>
+    </section>
+  )
+}

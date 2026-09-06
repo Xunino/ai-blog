@@ -1,0 +1,42 @@
+---
+// Trang goc "/" chi lam nhiem vu chuyen huong sang ngon ngu mac dinh.
+// Dung meta refresh + link that -> chay ca khi tat JavaScript.
+import { DEFAULT_LOCALE, SITE, LOCALES } from '../../site.config';
+
+const target = `/${DEFAULT_LOCALE}/`;
+---
+
+<!doctype html>
+<html lang={DEFAULT_LOCALE}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="refresh" content={`0; url=${target}`} />
+    <link rel="canonical" href={new URL(target, Astro.site).href} />
+    {
+      LOCALES.map((l) => (
+        <link rel="alternate" hreflang={l} href={new URL(`/${l}/`, Astro.site).href} />
+      ))
+    }
+    <title>{SITE.title[DEFAULT_LOCALE]}</title>
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+        display: grid;
+        place-items: center;
+        min-height: 100vh;
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <p>
+      {LOCALES.map((l, i) => (
+        <>
+          {i > 0 && ' · '}
+          <a href={`/${l}/`}>{l === 'vi' ? 'Tieng Viet' : 'English'}</a>
+        </>
+      ))}
+    </p>
+  </body>
+</html>
